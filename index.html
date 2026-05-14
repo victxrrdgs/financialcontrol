@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finanças App - Nuvem</title>
+    <title>FinançasApp - Controle Profissional</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -15,190 +15,330 @@
 
     <script>
         tailwind.config = {
-            theme: { extend: { colors: { appbg: '#f8fafc', cardbg: '#ffffff' } } }
+            theme: {
+                extend: {
+                    colors: { appbg: '#f1f5f9', cardbg: '#ffffff' },
+                    animation: { 'fade-in': 'fadeIn 0.4s ease-out' },
+                    keyframes: { fadeIn: { '0%': { opacity: 0, transform: 'translateY(10px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } } }
+                }
+            }
         }
     </script>
+    <style>
+        /* Esconde barras de rolagem mantendo a funcionalidade */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
-<body class="bg-appbg text-slate-700 font-sans min-h-screen pb-12">
+<body class="bg-appbg text-slate-700 font-sans min-h-screen pb-16 transition-colors duration-300">
 
-    <header class="bg-slate-900 text-white py-5 shadow-md">
-        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-wide"><i class="fas fa-wallet text-emerald-400 mr-2"></i>Finanças<span class="text-emerald-400">App</span></h1>
-            
-            <div id="user-info" class="hidden flex items-center gap-3">
-                <span id="user-name" class="text-sm font-medium text-slate-200"></span>
-                <button onclick="fazerLogout()" class="text-xs bg-slate-800 hover:bg-rose-600/20 text-slate-400 hover:text-rose-400 px-3 py-1.5 rounded-lg border border-slate-700 hover:border-rose-500/30 transition duration-150">
-                    Sair
-                </button>
+    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-emerald-500 text-slate-900 p-2 rounded-xl shadow-inner">
+                    <i class="fas fa-chart-line text-xl"></i>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight hidden sm:block">Finanças<span class="text-emerald-400">App</span></h1>
             </div>
-            <span id="badge-offline" class="text-xs bg-slate-800 text-slate-400 px-3 py-1 rounded-full border border-slate-700">Desconectado</span>
+            
+            <div id="user-info" class="hidden flex items-center gap-4">
+                <div class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 flex items-center gap-2 text-xs">
+                    <i class="far fa-calendar-alt text-emerald-400"></i>
+                    <select id="filtro-mes" onchange="atualizarInterface()" class="bg-transparent text-slate-200 focus:outline-none cursor-pointer font-medium">
+                        <option value="geral" class="bg-slate-900 text-white">Período: Geral</option>
+                        <option value="atual" selected class="bg-slate-900 text-white">Mês Atual</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center gap-3 pl-2 border-l border-slate-800">
+                    <div class="text-right hidden md:block">
+                        <p id="user-name" class="text-xs font-semibold text-slate-200"></p>
+                        <span class="text-[10px] text-emerald-400 font-medium">Conta Nuvem</span>
+                    </div>
+                    <button onclick="fazerLogout()" title="Sair da conta" class="bg-slate-800 hover:bg-rose-600/20 text-slate-400 hover:text-rose-400 p-2 rounded-lg border border-slate-700 hover:border-rose-500/30 transition duration-200">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <span id="badge-offline" class="text-xs bg-slate-800 text-slate-400 px-3 py-1.5 rounded-full border border-slate-700 animate-pulse font-medium">
+                <i class="fas fa-lock mr-1.5"></i>Área Restrita
+            </span>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 mt-8">
+    <main class="max-w-6xl mx-auto px-4 mt-6">
         
-        <section id="tela-login" class="max-w-md mx-auto bg-cardbg p-8 rounded-2xl shadow-sm border border-slate-100 mt-12">
+        <section id="tela-login" class="max-w-md mx-auto bg-cardbg p-8 rounded-2xl shadow-sm border border-slate-200/80 mt-12 animate-fade-in">
             <div class="text-center mb-6">
-                <h2 class="text-2xl font-bold text-slate-800">Boas-vindas de volta</h2>
-                <p class="text-xs text-slate-400 mt-1">Acesse suas finanças na nuvem</p>
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+                    <i class="fas fa-fingerprint"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">Acesse seu Painel</h2>
+                <p class="text-xs text-slate-400 mt-1">Controle de despesas inteligente e seguro</p>
             </div>
 
             <form onsubmit="processarLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">E-mail</label>
-                    <input type="email" id="login-email" required placeholder="seu@email.com" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-500">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">E-mail de acesso</label>
+                    <input type="email" id="login-email" required placeholder="exemplo@email.com" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Senha</label>
-                    <input type="password" id="login-senha" required placeholder="••••••••" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-500">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Senha de segurança</label>
+                    <input type="password" id="login-senha" required placeholder="••••••••" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500 transition">
                 </div>
 
-                <p id="erro-login" class="text-xs text-rose-500 hidden text-center font-medium"></p>
+                <p id="erro-login" class="text-xs bg-rose-50 text-rose-600 border border-rose-100 p-2.5 rounded-lg hidden text-center font-medium"></p>
 
-                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 rounded-lg text-sm transition duration-150 shadow-sm mt-2">
-                    Entrar
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 rounded-xl text-sm transition duration-200 shadow-md shadow-slate-900/10 active:scale-[0.99] mt-2">
+                    Entrar no Sistema
                 </button>
 
-                <div class="pt-4 border-t border-slate-100 text-center">
+                <div class="pt-5 border-t border-slate-100 text-center">
                     <p class="text-xs text-slate-500">
-                        Ainda não tem uma conta? 
-                        <a href="javascript:void(0)" onclick="alternarTela('cadastro')" class="text-emerald-600 hover:text-emerald-700 font-semibold underline ml-1">Criar conta</a>
+                        Primeira vez aqui? 
+                        <a href="javascript:void(0)" onclick="alternarTela('cadastro')" class="text-emerald-600 hover:text-emerald-700 font-bold underline ml-1">Criar conta gratuita</a>
                     </p>
                 </div>
             </form>
         </section>
 
-        <section id="tela-cadastro" class="max-w-md mx-auto bg-cardbg p-8 rounded-2xl shadow-sm border border-slate-100 mt-12 hidden">
+        <section id="tela-cadastro" class="max-w-md mx-auto bg-cardbg p-8 rounded-2xl shadow-sm border border-slate-200/80 mt-12 hidden animate-fade-in">
             <div class="text-center mb-6">
-                <h2 class="text-2xl font-bold text-slate-800">Criar Nova Conta</h2>
-                <p class="text-xs text-slate-400 mt-1">Comece a gerenciar seu dinheiro hoje</p>
+                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">Crie sua Conta</h2>
+                <p class="text-xs text-slate-400 mt-1">Leva apenas 30 segundos para começar</p>
             </div>
 
             <form onsubmit="processarCadastro(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Como quer ser chamado?</label>
-                    <input type="text" id="cad-nome" required placeholder="Seu Nome" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-500">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Como devemos te chamar?</label>
+                    <input type="text" id="cad-nome" required placeholder="Seu Nome ou Apelido" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">E-mail</label>
-                    <input type="email" id="cad-email" required placeholder="seu@email.com" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-500">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Seu melhor E-mail</label>
+                    <input type="email" id="cad-email" required placeholder="exemplo@email.com" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Senha (mínimo 6 caracteres)</label>
-                    <input type="password" id="cad-senha" required placeholder="••••••••" oninput="validarSenhaForca()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-500">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Crie uma Senha Forte (mín. 6 caracteres)</label>
+                    <input type="password" id="cad-senha" required placeholder="••••••••" oninput="validarSenhaForca()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Confirme a Senha</label>
-                    <input type="password" id="cad-senha-conf" required placeholder="••••••••" oninput="validarSenhaForca()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-slate-500">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Repita a Senha</label>
+                    <input type="password" id="cad-senha-conf" required placeholder="••••••••" oninput="validarSenhaForca()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500 transition">
                 </div>
 
-                <p id="erro-cad" class="text-xs text-rose-500 hidden text-center font-medium"></p>
+                <p id="erro-cad" class="text-xs bg-rose-50 text-rose-600 border border-rose-100 p-2.5 rounded-lg hidden text-center font-medium"></p>
 
-                <button type="submit" id="btn-submit-cad" disabled class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-medium py-2.5 rounded-lg text-sm transition duration-150 shadow-sm mt-2">
-                    Concluir Cadastro
+                <button type="submit" id="btn-submit-cad" disabled class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-100 disabled:text-slate-400 disabled:border disabled:border-slate-200 disabled:cursor-not-allowed text-white font-medium py-3 rounded-xl text-sm transition duration-200 shadow-md shadow-emerald-600/10 active:scale-[0.99] mt-2">
+                    Ativar Minha Conta
                 </button>
 
-                <div class="pt-4 border-t border-slate-100 text-center">
+                <div class="pt-5 border-t border-slate-100 text-center">
                     <p class="text-xs text-slate-500">
-                        Já possui uma conta? 
-                        <a href="javascript:void(0)" onclick="alternarTela('login')" class="text-slate-800 hover:text-slate-900 font-semibold underline ml-1">Fazer Login</a>
+                        Já tem uma conta registrada? 
+                        <a href="javascript:void(0)" onclick="alternarTela('login')" class="text-slate-900 hover:text-indigo-600 font-bold underline ml-1">Fazer Login</a>
                     </p>
                 </div>
             </form>
         </section>
 
-        <div id="painel-sistema" class="hidden">
+        <div id="painel-sistema" class="hidden animate-fade-in space-y-6">
             
-            <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-cardbg p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center border-l-4 border-indigo-500">
-                    <div>
-                        <p class="text-sm text-slate-400 uppercase font-semibold">Saldo Atual</p>
-                        <h2 class="text-3xl font-bold text-slate-800 mt-1" id="saldo-total">R$ 0,00</h2>
-                    </div>
-                    <div class="bg-indigo-50 p-4 rounded-full text-indigo-500"><i class="fas fa-university text-xl"></i></div>
+            <section class="bg-cardbg p-5 rounded-2xl shadow-sm border border-slate-200/60 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="w-full md:w-1/3 text-center md:text-left">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Termômetro de Gastos</p>
+                    <h4 class="text-base font-bold text-slate-800 mt-0.5" id="txt-termometro">Saúde Financeira</h4>
                 </div>
-                <div class="bg-cardbg p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center border-l-4 border-emerald-500">
-                    <div>
-                        <p class="text-sm text-slate-400 uppercase font-semibold">Receitas</p>
-                        <h2 class="text-3xl font-bold text-emerald-600 mt-1" id="total-receitas">R$ 0,00</h2>
+                <div class="w-full md:w-2/3 flex flex-col gap-2">
+                    <div class="flex justify-between text-xs font-semibold text-slate-500">
+                        <span>Comprometido: <strong id="lbl-porcentagem" class="text-slate-800">0%</strong></span>
+                        <span id="lbl-status-barra" class="text-emerald-600">Orçamento Livre</span>
                     </div>
-                    <div class="bg-emerald-50 p-4 rounded-full text-emerald-500"><i class="fas fa-arrow-trend-up text-xl"></i></div>
-                </div>
-                <div class="bg-cardbg p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center border-l-4 border-rose-500">
-                    <div>
-                        <p class="text-sm text-slate-400 uppercase font-semibold">Despesas</p>
-                        <h2 class="text-3xl font-bold text-rose-600 mt-1" id="total-despesas">R$ 0,00</h2>
+                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden p-0.5 border border-slate-200/60">
+                        <div id="barra-progresso" class="bg-emerald-500 h-full rounded-full transition-all duration-500 w-[0%]"></div>
                     </div>
-                    <div class="bg-rose-50 p-4 rounded-full text-rose-500"><i class="fas fa-arrow-trend-down text-xl"></i></div>
                 </div>
             </section>
 
-            <section class="mb-8">
-                <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fas fa-piggy-bank mr-2 text-slate-400"></i>Saldo por Conta</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="lista-bancos"></div>
-            </section>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-                <div class="bg-cardbg p-6 rounded-xl shadow-sm border border-slate-100 lg:col-span-2">
-                    <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fas fa-plus-circle mr-2 text-emerald-500"></i>Nova Transação</h3>
-                    <form onsubmit="adicionarTransacaoNuvem(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-semibold text-slate-500 mb-1">Descrição</label>
-                            <input type="text" id="desc" required placeholder="Ex: Conta de Luz, Supermercado" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm">
-                        </div>
+            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-cardbg p-5 rounded-2xl shadow-sm border border-slate-200/60 hover:shadow-md transition duration-200 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 translate-x-4 -translate-y-4 w-20 h-20 bg-indigo-50 rounded-full group-hover:scale-125 transition duration-300 -z-0"></div>
+                    <div class="relative z-10 flex justify-between items-start">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 mb-1">Valor (R$)</label>
-                            <input type="number" step="0.01" id="valor" required placeholder="0.00" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Saldo em Contas</p>
+                            <h2 class="text-2xl font-extrabold text-slate-800 mt-1.5" id="saldo-total">R$ 0,00</h2>
+                            <p class="text-[11px] text-slate-400 mt-1 font-medium">Acumulado total</p>
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-500 mb-1">Tipo</label>
-                            <select id="tipo" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm">
-                                <option value="despesa">Despesa Saída (-)</option>
-                                <option value="receita">Receita Entrada (+)</option>
-                            </select>
+                        <div class="bg-indigo-100 text-indigo-600 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shadow-inner">
+                            <i class="fas fa-wallet"></i>
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-500 mb-1">Categoria</label>
-                            <select id="categoria" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm">
-                                <option value="Alimentação">Alimentação</option>
-                                <option value="Moradia">Moradia</option>
-                                <option value="Transporte">Transporte</option>
-                                <option value="Lazer">Lazer</option>
-                                <option value="Salário/Renda">Salário/Renda</option>
-                                <option value="Outros">Outros</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-500 mb-1">Conta/Banco</label>
-                            <select id="banco" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm">
-                                <option value="Nubank">Nubank</option>
-                                <option value="Itaú">Itaú</option>
-                                <option value="Inter">Banco Inter</option>
-                                <option value="Carteira">Carteira</option>
-                            </select>
-                        </div>
-                        <div class="md:col-span-2 mt-2">
-                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 rounded-lg transition text-sm">Registrar Transação</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
 
-                <div class="bg-cardbg p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
-                    <h3 class="text-lg font-semibold text-slate-800 mb-4 self-start"><i class="fas fa-chart-pie mr-2 text-indigo-500"></i>Categorias</h3>
-                    <div class="w-full max-w-[220px]"><canvas id="graficoCategorias"></canvas></div>
+                <div class="bg-cardbg p-5 rounded-2xl shadow-sm border border-slate-200/60 hover:shadow-md transition duration-200 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 translate-x-4 -translate-y-4 w-20 h-20 bg-emerald-50 rounded-full group-hover:scale-125 transition duration-300 -z-0"></div>
+                    <div class="relative z-10 flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Receitas do Período</p>
+                            <h2 class="text-2xl font-extrabold text-emerald-600 mt-1.5" id="total-receitas">R$ 0,00</h2>
+                            <p class="text-[11px] text-emerald-500 mt-1 font-medium"><i class="fas fa-arrow-up mr-1"></i>Entradas somadas</p>
+                        </div>
+                        <div class="bg-emerald-100 text-emerald-600 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shadow-inner">
+                            <i class="fas fa-plus font-extrabold"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-cardbg p-5 rounded-2xl shadow-sm border border-slate-200/60 hover:shadow-md transition duration-200 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 translate-x-4 -translate-y-4 w-20 h-20 bg-rose-50 rounded-full group-hover:scale-125 transition duration-300 -z-0"></div>
+                    <div class="relative z-10 flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Despesas do Período</p>
+                            <h2 class="text-2xl font-extrabold text-rose-600 mt-1.5" id="total-despesas">R$ 0,00</h2>
+                            <p class="text-[11px] text-rose-400 mt-1 font-medium"><i class="fas fa-arrow-down mr-1"></i>Saídas somadas</p>
+                        </div>
+                        <div class="bg-rose-100 text-rose-600 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shadow-inner">
+                            <i class="fas fa-minus"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-cardbg p-5 rounded-2xl shadow-sm border border-slate-200/60 hover:shadow-md transition duration-200 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 translate-x-4 -translate-y-4 w-20 h-20 bg-slate-50 rounded-full group-hover:scale-125 transition duration-300 -z-0"></div>
+                    <div class="relative z-10 flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Economia / Sobra</p>
+                            <h2 class="text-2xl font-extrabold text-slate-800 mt-1.5" id="balanco-periodo">R$ 0,00</h2>
+                            <p id="lbl-status-balanco" class="text-[11px] text-slate-400 mt-1 font-medium">Balanço do filtro</p>
+                        </div>
+                        <div class="bg-slate-100 text-slate-600 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shadow-inner">
+                            <i class="fas fa-balance-scale-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-cardbg p-5 rounded-2xl shadow-sm border border-slate-200/60">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fas fa-piggy-bank text-indigo-500 text-base"></i> Distribuição nas Contas
+                    </h3>
+                    <span class="text-[11px] text-slate-400 font-medium">Calculado sobre todas as transações</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="lista-bancos"></div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <div class="bg-cardbg p-6 rounded-2xl shadow-sm border border-slate-200/60 lg:col-span-2 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fas fa-plus-circle text-emerald-500"></i> Registrar Transação
+                            </h3>
+                            
+                            <div class="bg-slate-100 p-1 rounded-xl flex gap-1">
+                                <button type="button" onclick="mudarTipoInput('despesa')" id="btn-tipo-despesa" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-rose-600 shadow-sm transition">
+                                    Despesa (-)
+                                </button>
+                                <button type="button" onclick="mudarTipoInput('receita')" id="btn-tipo-receita" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition">
+                                    Receita (+)
+                                </button>
+                            </div>
+                        </div>
+
+                        <form onsubmit="adicionarTransacaoNuvem(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="hidden" id="tipo" value="despesa">
+
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Título da transação</label>
+                                <input type="text" id="desc" required placeholder="Ex: Conta de Energia, Salário Mensal, Padaria" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-slate-500 font-medium transition">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Valor (R$)</label>
+                                <input type="number" step="0.01" id="valor" required placeholder="0.00" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-slate-500 font-medium transition">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Categoria</label>
+                                <select id="categoria" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-slate-500 font-medium transition">
+                                    <option value="Alimentação">🛒 Alimentação</option>
+                                    <option value="Moradia">🏠 Moradia</option>
+                                    <option value="Transporte">🚗 Transporte</option>
+                                    <option value="Lazer">🎉 Lazer</option>
+                                    <option value="Serviços">⚡ Serviços & Contas</option>
+                                    <option value="Salário/Renda">💰 Salário / Renda</option>
+                                    <option value="Investimentos">📈 Investimentos</option>
+                                    <option value="Outros">🏷️ Outros</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Conta de Destino / Origem</label>
+                                <select id="banco" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-slate-500 font-medium transition">
+                                    <option value="Nubank">🟣 Nubank</option>
+                                    <option value="Itaú">🟠 Itaú</option>
+                                    <option value="Inter">🟧 Banco Inter</option>
+                                    <option value="Carteira">💵 Carteira (Dinheiro)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 mb-1">Data de Referência</label>
+                                <input type="date" id="data-input" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-slate-500 font-medium text-slate-600 transition">
+                            </div>
+
+                            <div class="md:col-span-2 mt-2">
+                                <button type="submit" id="btn-registrar" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl transition duration-200 text-sm shadow-md shadow-rose-600/10 active:scale-[0.99]">
+                                    Lançar Despesa
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="bg-cardbg p-6 rounded-2xl shadow-sm border border-slate-200/60 flex flex-col justify-between items-center">
+                    <div class="w-full flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                            <i class="fas fa-chart-pie text-indigo-500"></i> Mapa de Gastos
+                        </h3>
+                        <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-bold">Despesas</span>
+                    </div>
+                    
+                    <div class="w-full max-w-[200px] my-auto relative flex items-center justify-center">
+                        <canvas id="graficoCategorias"></canvas>
+                    </div>
+                    
+                    <p class="text-[11px] text-slate-400 text-center mt-4 font-medium">Reflete o período selecionado no topo</p>
                 </div>
             </div>
 
-            <div class="bg-cardbg rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                <div class="p-5 border-b border-slate-100"><h3 class="text-lg font-semibold text-slate-800"><i class="fas fa-list mr-2 text-slate-400"></i>Histórico</h3></div>
-                <div class="overflow-x-auto">
+            <div class="bg-cardbg rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                    <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-list-ul text-slate-400"></i> Extrato Detalhado
+                    </h3>
+                    <span class="text-xs text-slate-400 font-medium" id="txt-contador-tabela">Carregando...</span>
+                </div>
+
+                <div class="overflow-x-auto no-scrollbar">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50 text-slate-400 text-xs uppercase font-semibold border-b border-slate-100">
-                                <th class="p-4">Descrição</th><th class="p-4">Categoria</th><th class="p-4">Conta</th><th class="p-4">Valor</th><th class="p-4 text-center">Ação</th>
+                            <tr class="bg-slate-100/75 text-slate-400 text-[11px] uppercase tracking-wider font-extrabold border-b border-slate-200/60">
+                                <th class="p-4 pl-5">Status / Título</th>
+                                <th class="p-4">Categoria</th>
+                                <th class="p-4">Conta</th>
+                                <th class="p-4">Data</th>
+                                <th class="p-4 text-right">Valor</th>
+                                <th class="p-4 pr-5 text-center">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="tabela-transacoes" class="text-sm divide-y divide-slate-100"></tbody>
+                        <tbody id="tabela-transacoes" class="text-sm divide-y divide-slate-100 font-medium">
+                            </tbody>
                     </table>
                 </div>
             </div>
@@ -208,30 +348,38 @@
     </main>
 
     <script>
-// Única declaração correta da chave (com 'l' e 'c' minúsculos em Rlc4)
+        // 1. CREDENCIAIS DO FIREBASE (Sênior e Perfeitamente Transcritas)
         const firebaseConfig = {
-            apiKey: "AIzaSyAaaAFp6gC4nOuj4Rlc4HZhPZo5ffHQUI4",
+            apiKey: "AIzaSyAaAaFP6gC4nOuj4R1c4HZhPZo5ffHqUI4",
             authDomain: "financasapp-5de18.firebaseapp.com",
             projectId: "financasapp-5de18",
             storageBucket: "financasapp-5de18.firebasestorage.app",
             messagingSenderId: "789455207825",
             appId: "1:789455207825:web:bd1e9cce13a313b4fc2e30"
         };
-        
+
+        // Inicialização global da nuvem
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // Variáveis Mestre da Aplicação
         let usuarioAtual = null;
-        let transacoes = [];
+        let transacoesNuvem = []; // Guarda tudo do Firestore
         let grafico = null;
         const bancosCadastrados = ['Nubank', 'Itaú', 'Inter', 'Carteira'];
 
-        // CONTROLE VISUAL DAS TELAS DE AUTH
-        function alternarTela(tela) {
+        // Inicializa input de data com hoje por padrão
+        document.getElementById('data-input').valueAsDate = new Date();
+
+
+        // ================= INTERATIVIDADE DA INTERFACE =================
+        
+        // Altera entre as telas de Acesso e Registro
+        function alternarTela(alvo) {
             document.getElementById('erro-login').classList.add('hidden');
             document.getElementById('erro-cad').classList.add('hidden');
-            if(tela === 'cadastro') {
+            if(alvo === 'cadastro') {
                 document.getElementById('tela-login').classList.add('hidden');
                 document.getElementById('tela-cadastro').classList.remove('hidden');
             } else {
@@ -240,7 +388,29 @@
             }
         }
 
-        // UX: Validação em tempo real para liberar botão de cadastro
+        // Alterna o visual e o valor do form de inserção (Botões Receita/Despesa)
+        function mudarTipoInput(tipoSelecionado) {
+            const btnDespesa = document.getElementById('btn-tipo-despesa');
+            const btnReceita = document.getElementById('btn-tipo-receita');
+            const btnAcao = document.getElementById('btn-registrar');
+            const inputTipo = document.getElementById('tipo');
+
+            inputTipo.value = tipoSelecionado;
+
+            if (tipoSelecionado === 'despesa') {
+                btnDespesa.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-rose-600 shadow-sm transition";
+                btnReceita.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition";
+                btnAcao.className = "w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl transition duration-200 text-sm shadow-md shadow-rose-600/10 active:scale-[0.99]";
+                btnAcao.innerText = "Lançar Despesa";
+            } else {
+                btnReceita.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-emerald-600 shadow-sm transition";
+                btnDespesa.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 transition";
+                btnAcao.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition duration-200 text-sm shadow-md shadow-emerald-600/10 active:scale-[0.99]";
+                btnAcao.innerText = "Adicionar Receita";
+            }
+        }
+
+        // Validação Inteligente da Força da Senha
         function validarSenhaForca() {
             const s1 = document.getElementById('cad-senha').value;
             const s2 = document.getElementById('cad-senha-conf').value;
@@ -253,15 +423,15 @@
                     err.classList.add('hidden');
                 } else if (s2.length > 0) {
                     btn.disabled = true;
-                    err.innerText = "As senhas não coincidem.";
+                    err.innerText = "As senhas digitadas não coincidem.";
                     err.classList.remove('hidden');
                 }
-            } else {
-                btn.disabled = true;
-            }
+            } else { btn.disabled = true; }
         }
 
-        // LÓGICA DE LOGIN
+
+        // ================= AUTENTICAÇÃO FIREBASE =================
+        
         function processarLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
@@ -269,41 +439,30 @@
             const err = document.getElementById('erro-login');
 
             auth.signInWithEmailAndPassword(email, senha).catch(error => {
-                err.innerText = "E-mail ou senha incorretos.";
+                err.innerText = "Credenciais incorretas ou conta inexistente.";
                 err.classList.remove('hidden');
             });
         }
 
-        // LÓGICA DE CADASTRO SÊNIOR (Salva o Nome no Perfil do Firebase)
         function processarCadastro(e) {
             e.preventDefault();
-            const nome = document.getElementById('cad-nome').value;
-            const email = document.getElementById('cad-email').value;
+            const nome = document.getElementById('cad-nome').value.trim();
+            const email = document.getElementById('cad-email').value.trim();
             const senha = document.getElementById('cad-senha').value;
             const err = document.getElementById('erro-cad');
 
             auth.createUserWithEmailAndPassword(email, senha)
-                .then((credenciais) => {
-                    // Atualiza o perfil do Firebase injetando o Nome digitado
-                    return credenciais.user.updateProfile({ displayName: nome });
-                })
-                .then(() => {
-                    // Recarrega a visualização do header para puxar o nome novo
-                    document.getElementById('user-name').innerText = `Olá, ${nome}`;
-                })
+                .then(credenciais => credenciais.user.updateProfile({ displayName: nome }))
+                .then(() => { document.getElementById('user-name').innerText = `Olá, ${nome}`; })
                 .catch(error => {
-                    if(error.code === 'auth/email-already-in-use') {
-                        err.innerText = "Este e-mail já está cadastrado.";
-                    } else {
-                        err.innerText = "Erro ao cadastrar: " + error.message;
-                    }
+                    err.innerText = error.code === 'auth/email-already-in-use' ? "O e-mail digitado já possui registro no sistema." : "Falha ao registrar: " + error.message;
                     err.classList.remove('hidden');
                 });
         }
 
         function fazerLogout() { auth.signOut(); }
 
-        // MONITOR DE ESTADO
+        // Monitor de Roteamento Autenticado
         auth.onAuthStateChanged(user => {
             const telaLogin = document.getElementById('tela-login');
             const telaCadastro = document.getElementById('tela-cadastro');
@@ -313,37 +472,38 @@
 
             if (user) {
                 usuarioAtual = user;
-                telaLogin.classList.add('hidden');
-                telaCadastro.classList.add('hidden');
-                painelSistema.classList.remove('hidden');
-                userInfo.classList.remove('hidden');
+                telaLogin.classList.add('hidden'); telaCadastro.classList.add('hidden');
+                painelSistema.classList.remove('hidden'); userInfo.classList.remove('hidden');
                 badgeOffline.classList.add('hidden');
                 
-                // Exibe o Nome (se houver) ou o E-mail como fallback
-                document.getElementById('user-name').innerText = user.displayName ? `Olá, ${user.displayName}` : user.email;
+                document.getElementById('user-name').innerText = user.displayName ? `Olá, ${user.displayName.split(' ')[0]}` : user.email;
                 carregarTransacoesNuvem();
             } else {
-                usuarioAtual = null; transacoes = [];
-                telaLogin.classList.remove('hidden');
-                telaCadastro.classList.add('hidden');
-                painelSistema.classList.add('hidden');
-                userInfo.classList.add('hidden');
+                usuarioAtual = null; transacoesNuvem = [];
+                telaLogin.classList.remove('hidden'); telaCadastro.classList.add('hidden');
+                painelSistema.classList.add('hidden'); userInfo.classList.add('hidden');
                 badgeOffline.classList.remove('hidden');
                 
-                // Limpa formulários auth ao sair
+                // Reset de dados de input
                 document.getElementById('login-senha').value = '';
-                document.getElementById('cad-senha').value = '';
-                document.getElementById('cad-senha-conf').value = '';
+                document.getElementById('cad-senha').value = ''; document.getElementById('cad-senha-conf').value = '';
             }
         });
 
-        // ================= FIRESTORE (NUVEM) =================
+
+        // ================= CONECTORES DE NUVEM (FIRESTORE) =================
+        
         function carregarTransacoesNuvem() {
             if (!usuarioAtual) return;
-            db.collection("transacoes").where("userId", "==", usuarioAtual.uid).orderBy("data", "desc")
+            // Puxa do Firestore com a regra mais enxuta possível para evitar bloqueio por falta de Index composto
+            db.collection("transacoes")
+                .where("userId", "==", usuarioAtual.uid)
                 .onSnapshot((snapshot) => {
-                    transacoes = [];
-                    snapshot.forEach((doc) => transacoes.push({ id: doc.id, ...doc.data() }));
+                    transacoesNuvem = [];
+                    snapshot.forEach(doc => transacoesNuvem.push({ id: doc.id, ...doc.data() }));
+                    
+                    // Ordena na memória pela data decrescente (mais recentes primeiro)
+                    transacoesNuvem.sort((a, b) => new Date(b.data) - new Date(a.data));
                     atualizarInterface();
                 });
         }
@@ -351,58 +511,188 @@
         function adicionarTransacaoNuvem(event) {
             event.preventDefault();
             if (!usuarioAtual) return;
-            const nova = {
+            
+            // Corrige ou extrai a data informada
+            let dataInformada = document.getElementById('data-input').value;
+            if(!dataInformada) dataInformada = new Date().toISOString().split('T')[0];
+
+            const novoObjeto = {
                 userId: usuarioAtual.uid,
-                desc: document.getElementById('desc').value,
+                desc: document.getElementById('desc').value.trim(),
                 valor: parseFloat(document.getElementById('valor').value),
                 tipo: document.getElementById('tipo').value,
                 categoria: document.getElementById('categoria').value,
                 banco: document.getElementById('banco').value,
-                data: new Date().toISOString()
+                data: dataInformada // formato YYYY-MM-DD
             };
-            db.collection("transacoes").add(nova).then(() => {
+
+            db.collection("transacoes").add(novoObjeto).then(() => {
                 document.getElementById('desc').value = ''; document.getElementById('valor').value = '';
                 document.getElementById('desc').focus();
-            }).catch(err => alert("Erro ao salvar: " + err));
+            }).catch(err => alert("Falha na gravação em nuvem: " + err));
         }
 
-        function deletarTransacaoNuvem(id) { db.collection("transacoes").doc(id).delete(); }
+        function deletarTransacaoNuvem(docId) { db.collection("transacoes").doc(docId).delete(); }
 
-        // ================= INTERFACE & GRÁFICOS =================
+
+        // ================= REATIVIDADE E MOTOR GRÁFICO =================
+        
         function formatarMoeda(val) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val); }
 
+        function formatarDataVisivel(dataStr) {
+            if(!dataStr) return '--';
+            const partes = dataStr.split('-');
+            if(partes.length !== 3) return dataStr;
+            return `${partes[2]}/${partes[1]}`; // Retorna DD/MM
+        }
+
+        // Função principal que orquestra os cálculos e a renderização na tela
         function atualizarInterface() {
-            let saldo = 0; let receitas = 0; let despesas = 0;
-            let saldoBancos = { 'Nubank': 0, 'Itaú': 0, 'Inter': 0, 'Carteira': 0 }; let gastosCategoria = {};
-            const tbody = document.getElementById('tabela-transacoes'); tbody.innerHTML = '';
+            const modoFiltro = document.getElementById('filtro-mes').value; // 'geral' ou 'atual'
+            const dataHoje = new Date();
+            const mesAtualString = String(dataHoje.getMonth() + 1).padStart(2, '0');
+            const anoAtualString = String(dataHoje.getFullYear());
 
-            transacoes.forEach((t) => {
+            // 1. Filtrar as transações para processamento
+            const transacoesVisiveis = transacoesNuvem.filter(t => {
+                if(modoFiltro === 'geral') return true;
+                if(!t.data) return false;
+                const partes = t.data.split('-'); // [YYYY, MM, DD]
+                return partes[0] === anoAtualString && partes[1] === mesAtualString;
+            });
+
+            // Contadores
+            let saldoGeralAcumulado = 0; // O Saldo Geral deve ser sempre a soma de TUDO que o usuário tem
+            let receitasPeriodo = 0;
+            let despesasPeriodo = 0;
+            let saldoBancosGeral = { 'Nubank': 0, 'Itaú': 0, 'Inter': 0, 'Carteira': 0 };
+            let gastosCategoriaPeriodo = {};
+
+            // 2. Processamento Integral (Para saldos gerais em conta)
+            transacoesNuvem.forEach(t => {
                 const val = t.valor;
-                if (t.tipo === 'receita') { receitas += val; saldo += val; if(saldoBancos[t.banco] !== undefined) saldoBancos[t.banco] += val; } 
-                else { despesas += val; saldo -= val; if(saldoBancos[t.banco] !== undefined) saldoBancos[t.banco] -= val; gastosCategoria[t.categoria] = (gastosCategoria[t.categoria] || 0) + val; }
+                if (t.tipo === 'receita') {
+                    saldoGeralAcumulado += val;
+                    if(saldoBancosGeral[t.banco] !== undefined) saldoBancosGeral[t.banco] += val;
+                } else {
+                    saldoGeralAcumulado -= val;
+                    if(saldoBancosGeral[t.banco] !== undefined) saldoBancosGeral[t.banco] -= val;
+                }
+            });
 
-                const tr = document.createElement('tr'); tr.className = "hover:bg-slate-50";
-                const cor = t.tipo === 'receita' ? 'text-emerald-600 font-semibold' : 'text-rose-600 font-semibold';
-                const sinal = t.tipo === 'receita' ? '+' : '-';
-                tr.innerHTML = `<td class="p-4 font-medium text-slate-800">${t.desc}</td><td class="p-4"><span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-xs">${t.categoria}</span></td><td class="p-4 text-slate-500">${t.banco}</td><td class="p-4 ${cor}">${sinal} ${formatarMoeda(val)}</td><td class="p-4 text-center"><button onclick="deletarTransacaoNuvem('${t.id}')" class="text-slate-300 hover:text-rose-500 transition"><i class="fas fa-trash-alt"></i></button></td>`;
+            // 3. Processamento Focado no Período Selecionado (KPIs superiores e gráfico)
+            transacoesVisiveis.forEach(t => {
+                const val = t.valor;
+                if (t.tipo === 'receita') { receitasPeriodo += val; } 
+                else { 
+                    despesasPeriodo += val; 
+                    // Remove emoji da string da categoria para ficar limpo no gráfico
+                    const catLimpa = t.categoria.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]|\s./g, '').trim();
+                    gastosCategoriaPeriodo[catLimpa] = (gastosCategoriaPeriodo[catLimpa] || 0) + val; 
+                }
+            });
+
+            // 4. Renderização da Tabela de Lançamentos
+            const tbody = document.getElementById('tabela-transacoes'); tbody.innerHTML = '';
+            
+            transacoesVisiveis.forEach(t => {
+                const tr = document.createElement('tr'); tr.className = "hover:bg-slate-50/80 transition duration-150";
+                const isReceita = t.tipo === 'receita';
+                const corValor = isReceita ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold';
+                const sinal = isReceita ? '+' : '-';
+                const iconeLinha = isReceita ? '<i class="fas fa-arrow-trend-up text-emerald-500 mr-2"></i>' : '<i class="fas fa-arrow-trend-down text-rose-500 mr-2"></i>';
+
+                tr.innerHTML = `
+                    <td class="p-4 pl-5 font-bold text-slate-800 flex items-center">${iconeLinha} ${t.desc}</td>
+                    <td class="p-4"><span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-xs border border-slate-200/60 font-semibold">${t.categoria}</span></td>
+                    <td class="p-4 text-xs font-semibold text-slate-500">${t.banco}</td>
+                    <td class="p-4 text-xs text-slate-400 font-semibold">${formatarDataVisivel(t.data)}</td>
+                    <td class="p-4 text-right ${corValor}">${sinal} ${formatarMoeda(t.valor)}</td>
+                    <td class="p-4 pr-5 text-center">
+                        <button onclick="deletarTransacaoNuvem('${t.id}')" title="Excluir lançamento" class="text-slate-300 hover:text-rose-600 p-1.5 rounded transition">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                `;
                 tbody.appendChild(tr);
             });
 
-            if(transacoes.length === 0) tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400">Nenhum lançamento cadastrado.</td></tr>`;
-            document.getElementById('saldo-total').innerText = formatarMoeda(saldo); document.getElementById('total-receitas').innerText = formatarMoeda(receitas); document.getElementById('total-despesas').innerText = formatarMoeda(despesas);
+            // Mensagem de Extrato Vazio
+            if(transacoesVisiveis.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-slate-400"><i class="far fa-folder-open text-2xl block mb-2 text-slate-300"></i>Nenhum movimento registrado neste período.</td></tr>`;
+            }
+
+            // Atualização dos Textos e Contadores Dinâmicos
+            document.getElementById('txt-contador-tabela').innerText = `${transacoesVisiveis.length} registro(s)`;
+            document.getElementById('saldo-total').innerText = formatarMoeda(saldoGeralAcumulado);
+            document.getElementById('total-receitas').innerText = formatarMoeda(receitasPeriodo);
+            document.getElementById('total-despesas').innerText = formatarMoeda(despesasPeriodo);
+            
+            // Cálculo da Sobra do Período
+            const balancoLiquido = receitasPeriodo - despesasPeriodo;
+            const elBalanco = document.getElementById('balanco-periodo');
+            elBalanco.innerText = formatarMoeda(balancoLiquido);
+            elBalanco.className = `text-2xl font-extrabold mt-1.5 ${balancoLiquido >= 0 ? 'text-slate-800' : 'text-rose-600'}`;
+
+            // Termômetro da Barra de Progresso
+            let porcentagemGastos = 0;
+            if(receitasPeriodo > 0) {
+                porcentagemGastos = Math.min(Math.round((despesasPeriodo / receitasPeriodo) * 100), 100);
+            } else if (despesasPeriodo > 0) { porcentagemGastos = 100; }
+            
+            document.getElementById('lbl-porcentagem').innerText = `${porcentagemGastos}%`;
+            document.getElementById('barra-progresso').style.width = `${porcentagemGastos}%`;
+            
+            const statusBarra = document.getElementById('lbl-status-barra');
+            if(porcentagemGastos < 60) { statusBarra.innerText = "Orçamento Livre"; statusBarra.className = "text-emerald-600 font-bold"; document.getElementById('barra-progresso').className = "bg-emerald-500 h-full rounded-full transition-all duration-500"; }
+            else if(porcentagemGastos < 90) { statusBarra.innerText = "Atenção Moderada"; statusBarra.className = "text-amber-500 font-bold"; document.getElementById('barra-progresso').className = "bg-amber-500 h-full rounded-full transition-all duration-500"; }
+            else { statusBarra.innerText = "Limite Crítico!"; statusBarra.className = "text-rose-600 font-bold"; document.getElementById('barra-progresso').className = "bg-rose-600 h-full rounded-full transition-all duration-500"; }
+
+            // Renderização das Contas/Bancos
             const divBancos = document.getElementById('lista-bancos'); divBancos.innerHTML = '';
-            bancosCadastrados.forEach(b => {
-                const v = saldoBancos[b]; const cor = v >= 0 ? 'text-slate-800' : 'text-rose-600';
-                divBancos.innerHTML += `<div class="bg-cardbg p-3 rounded-lg border border-slate-100 shadow-sm text-center"><p class="text-xs text-slate-400 font-medium">${b}</p><p class="text-sm font-bold ${cor} mt-0.5">${formatarMoeda(v)}</p></div>`;
+            bancosCadastrados.forEach(banco => {
+                const valBanco = saldoBancosGeral[banco];
+                const corTextoBanco = valBanco >= 0 ? 'text-slate-800 font-extrabold' : 'text-rose-600 font-extrabold';
+                divBancos.innerHTML += `
+                    <div class="bg-slate-50/75 p-3 rounded-xl border border-slate-200/50 text-center">
+                        <p class="text-[11px] text-slate-400 font-bold tracking-tight">${banco}</p>
+                        <p class="text-xs ${corTextoBanco} mt-1">${formatarMoeda(valBanco)}</p>
+                    </div>`;
             });
-            atualizarGrafico(gastosCategoria);
+
+            // Re-desenha o gráfico
+            atualizarGrafico(gastosCategoriaPeriodo);
         }
 
-        function atualizarGrafico(dados) {
-            const ctx = document.getElementById('graficoCategorias').getContext('2d'); const labels = Object.keys(dados); const data = Object.values(dados);
+        // Gráfico de Categorias Chart.js
+        function atualizarGrafico(dadosObjeto) {
+            const ctx = document.getElementById('graficoCategorias').getContext('2d');
+            const labels = Object.keys(dadosObjeto); const data = Object.values(dadosObjeto);
             if (grafico) grafico.destroy();
-            if (labels.length === 0) { grafico = new Chart(ctx, { type: 'doughnut', data: { labels: ['Sem Despesas'], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] }, options: { plugins: { legend: { display: false } } } }); return; }
-            grafico = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#f43f5e', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#64748b'], borderWidth: 0 }] }, options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } } } });
+
+            if (labels.length === 0) {
+                grafico = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: { labels: ['Sem Despesas'], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] },
+                    options: { plugins: { legend: { display: false } }, cutout: '75%', animation: false }
+                }); return;
+            }
+
+            grafico = new Chart(ctx, {
+                type: 'doughnut',
+                data: { 
+                    labels: labels, 
+                    datasets: [{ 
+                        data: data, 
+                        backgroundColor: ['#f43f5e', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#64748b', '#ec4899', '#3b82f6'], 
+                        borderWidth: 2, borderColor: '#ffffff', hoverOffset: 4 
+                    }] 
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, cutout: '70%',
+                    plugins: { legend: { display: false } }
+                }
+            });
         }
     </script>
 </body>
