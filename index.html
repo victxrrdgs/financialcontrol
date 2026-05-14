@@ -17,187 +17,192 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { 
-                        metriaNavy: '#1a1c2e', 
-                        metriaGold: '#d4af37',
-                        appleBg: '#fbfbfd',
-                        appleCard: '#ffffff',
-                        appleText: '#1d1d1f'
-                    },
-                    boxShadow: { 'apple': '0 4px 24px rgba(0, 0, 0, 0.04)' }
+                    colors: { iosBlue: '#007AFF', metriaGold: '#D4AF37' }
                 }
             }
         }
     </script>
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        #sidebar { transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
-        input:focus { ring: 2px; ring-color: #d4af37; border-color: #d4af37; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #f5f5f7; overflow-x: hidden; }
+        
+        /* Glassmorphism Core */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Animated Background Blobs */
+        .blob-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .blob { position: absolute; width: 600px; height: 600px; border-radius: 50%; filter: blur(100px); opacity: 0.3; animation: float 20s infinite alternate; }
+        @keyframes float { from { transform: translate(-10%, -10%); } to { transform: translate(20%, 15%); } }
+
+        .sidebar-active { background: rgba(0, 0, 0, 0.05); color: #000; font-weight: 700; }
+        .card-apple { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .card-apple:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
     </style>
 </head>
-<body class="bg-appleBg text-appleText min-h-screen flex flex-col md:flex-row antialiased">
+<body class="flex min-h-screen text-slate-900">
 
-    <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-metriaNavy text-white min-h-screen border-r border-slate-800 p-4 justify-between sticky top-0 z-40">
-        <div class="space-y-6">
-            <div class="flex items-center justify-between px-2 pt-2">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-metriaGold text-metriaNavy rounded-lg flex items-center justify-center font-bold shadow-lg">M</div>
-                    <div class="sidebar-text">
-                        <h1 class="text-base font-bold leading-none">Metria</h1>
-                        <span class="text-[9px] text-slate-400 uppercase tracking-widest font-semibold">Financial Design</span>
-                    </div>
-                </div>
-                <button onclick="toggleSidebar()" class="text-slate-500 hover:text-white p-1.5"><i id="toggle-icon" class="fas fa-chevron-left text-xs"></i></button>
+    <div class="blob-container">
+        <div class="blob" style="top: -100px; left: -100px; background: #c7d2fe;"></div>
+        <div class="blob" style="bottom: -100px; right: -100px; background: #fae8ff;"></div>
+    </div>
+
+    <aside id="sidebar" class="w-64 glass m-4 mr-0 rounded-[2rem] hidden md:flex flex-col sticky top-4 h-[calc(100vh-2rem)] z-50">
+        <div class="p-8">
+            <div class="flex items-center gap-3 mb-10 pl-2">
+                <div class="w-10 h-10 bg-black text-white rounded-2xl flex items-center justify-center font-bold shadow-2xl">M</div>
+                <h1 class="text-xl font-bold tracking-tight">Metria</h1>
             </div>
 
-            <nav class="space-y-1 hidden-auth">
-                <p class="sidebar-text text-[10px] font-bold text-slate-500 uppercase px-3 py-2">Patrimônio</p>
-                <button onclick="mudarAba('geral')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-white/10 transition">
-                    <i class="fas fa-chart-line w-5"></i> <span class="sidebar-text">Fluxo de Caixa</span>
+            <nav class="space-y-2 hidden-auth">
+                <button onclick="mudarAba('geral')" id="btn-geral" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-500 hover:bg-white/50 transition-all sidebar-active">
+                    <i class="fas fa-grid-2 w-5"></i> Fluxo
                 </button>
-                <button onclick="mudarAba('investimentos')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-white/10 transition">
-                    <i class="fas fa-vault w-5"></i> <span class="sidebar-text">Investimentos</span>
+                <button onclick="mudarAba('investimentos')" id="btn-investimentos" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-500 hover:bg-white/50 transition-all">
+                    <i class="fas fa-chart-line w-5"></i> Carteira
                 </button>
-
-                <p class="sidebar-text text-[10px] font-bold text-slate-500 uppercase px-3 py-4">Planejamento</p>
-                <button onclick="mudarAba('perfil')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-white/10 transition">
-                    <i class="fas fa-user-gear w-5"></i> <span class="sidebar-text">Perfil & Metas</span>
-                </button>
-                <button onclick="mudarAba('perfil')" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium hover:bg-white/10 transition opacity-50">
-                    <i class="fas fa-bullseye w-5"></i> <span class="sidebar-text">Projeções</span>
+                <button onclick="mudarAba('perfil')" id="btn-perfil" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-500 hover:bg-white/50 transition-all">
+                    <i class="fas fa-bullseye w-5"></i> Metas
                 </button>
             </nav>
         </div>
 
-        <div class="border-t border-slate-800 pt-4 hidden-auth">
-            <div class="flex items-center justify-between bg-slate-800/40 p-2 rounded-xl border border-slate-700">
-                <div class="flex items-center gap-2 overflow-hidden">
-                    <img id="user-photo" src="" class="w-7 h-7 rounded-full bg-slate-700 hidden">
-                    <div id="user-initial" class="w-7 h-7 rounded-full bg-metriaGold text-metriaNavy flex items-center justify-center text-[10px] font-bold shrink-0">U</div>
-                    <p id="desk-user-name" class="text-xs font-semibold truncate"></p>
+        <div class="mt-auto p-4 hidden-auth">
+            <div class="glass bg-white/40 p-3 rounded-2xl flex items-center gap-3 border-none shadow-sm">
+                <img id="user-photo" src="" class="w-9 h-9 rounded-full hidden border-2 border-white">
+                <div id="user-initial" class="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold">U</div>
+                <div class="overflow-hidden">
+                    <p id="desk-user-name" class="text-[10px] font-bold truncate"></p>
+                    <button onclick="fazerLogout()" class="text-[9px] text-iosBlue font-bold uppercase">Sair</button>
                 </div>
-                <button onclick="fazerLogout()" class="text-slate-400 hover:text-rose-400 p-1.5 transition"><i class="fas fa-power-off text-xs"></i></button>
             </div>
         </div>
     </aside>
 
-    <main class="flex-1 max-w-6xl w-full mx-auto p-6 md:p-10">
-        <header id="header-main" class="flex justify-between items-center mb-10 pb-6 border-b border-slate-200 hidden-auth">
-            <div>
-                <h2 id="titulo-aba" class="text-2xl font-bold tracking-tight">Painel Executivo</h2>
-                <p id="subtitulo-aba" class="text-xs text-slate-400 mt-1">Bem-vindo à sua central de inteligência financeira.</p>
-            </div>
-            <div id="controle-meses" class="flex items-center gap-2 bg-white border border-slate-200 p-1.5 rounded-2xl shadow-apple">
-                <button onclick="navegarMes(-1)" class="p-2 hover:bg-slate-50 rounded-xl"><i class="fas fa-chevron-left text-xs"></i></button>
-                <span id="lbl-mes-atual" class="text-xs font-bold px-4 capitalize">Maio 2026</span>
-                <button onclick="navegarMes(1)" class="p-2 hover:bg-slate-50 rounded-xl"><i class="fas fa-chevron-right text-xs"></i></button>
-            </div>
-        </header>
-
-        <div id="auth-container" class="max-w-sm mx-auto my-20">
-            <div class="bg-white p-10 rounded-3xl shadow-apple border border-slate-100 text-center">
-                <div class="w-16 h-16 bg-metriaNavy text-metriaGold rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl shadow-xl">M</div>
-                <h3 class="text-2xl font-bold text-slate-900 mb-2">Metria</h3>
-                <p class="text-sm text-slate-400 mb-8">Design de Liberdade Financeira</p>
-                
-                <button onclick="loginGoogle()" class="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold py-3.5 rounded-2xl text-sm transition mb-6 shadow-sm border-b-2">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="w-5 h-5">
-                    Acessar com Google
+    <main class="flex-1 p-4 md:p-10">
+        
+        <div id="auth-container" class="max-w-sm mx-auto mt-32 text-center animate-pulse">
+            <div class="glass p-10 rounded-[3rem] shadow-2xl">
+                <div class="w-16 h-16 bg-black text-white rounded-3xl flex items-center justify-center mx-auto mb-6 text-3xl font-bold">M</div>
+                <h2 class="text-2xl font-bold mb-8">Wealth Management</h2>
+                <button onclick="loginGoogle()" class="w-full flex items-center justify-center gap-3 bg-black text-white py-4 rounded-2xl font-semibold text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-xl">
+                    <i class="fab fa-google"></i> Acessar com Google
                 </button>
-
-                <div class="relative flex items-center justify-center mb-6 opacity-20"><div class="border-t border-slate-900 w-full"></div></div>
-
-                <form onsubmit="processarLogin(event)" class="space-y-4">
-                    <input type="email" id="login-email" placeholder="E-mail" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm focus:outline-none">
-                    <input type="password" id="login-senha" placeholder="Senha" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm focus:outline-none">
-                    <button type="submit" class="w-full bg-metriaNavy text-white font-bold py-4 rounded-2xl text-sm shadow-lg">Entrar</button>
-                </form>
             </div>
         </div>
 
-        <div id="aba-geral" class="hidden space-y-8 animate-fade-in">
-            <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-3xl shadow-apple border border-slate-50">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Patrimônio Líquido</p>
-                    <h3 id="saldo-total" class="text-3xl font-bold text-metriaNavy mt-2">R$ 0,00</h3>
+        <div id="app-content" class="hidden-auth hidden space-y-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                <div>
+                    <h2 id="main-title" class="text-4xl font-black tracking-tight text-slate-900">Dashboard</h2>
+                    <p id="main-subtitle" class="text-slate-500 text-sm mt-1">Visão holística do seu patrimônio.</p>
                 </div>
-                <div class="bg-white p-6 rounded-3xl shadow-apple border border-slate-50 border-t-4 border-emerald-500">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Receitas do Mês</p>
-                    <h3 id="total-receitas" class="text-3xl font-bold text-emerald-600 mt-2">R$ 0,00</h3>
-                </div>
-                <div class="bg-white p-6 rounded-3xl shadow-apple border border-slate-50 border-t-4 border-rose-500">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Despesas do Mês</p>
-                    <h3 id="total-despesas" class="text-3xl font-bold text-rose-600 mt-2">R$ 0,00</h3>
-                </div>
-            </section>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-3xl shadow-apple border border-slate-50">
-                    <h4 class="text-sm font-bold uppercase mb-6 text-metriaNavy">Novo Lançamento</h4>
-                    <form onsubmit="adicionarTransacao(event)" class="space-y-4">
-                        <input type="text" id="desc" placeholder="Descrição" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm">
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="number" step="0.01" id="valor" placeholder="Valor R$" class="p-4 bg-slate-50 border-none rounded-2xl text-sm">
-                            <select id="tipo-movimento" class="p-4 bg-slate-50 border-none rounded-2xl text-sm">
-                                <option value="despesa">Despesa (-)</option>
-                                <option value="receita">Receita (+)</option>
-                            </select>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <select id="categoria" class="p-4 bg-slate-50 border-none rounded-2xl text-sm">
-                                <option>Alimentação</option><option>Moradia</option><option>Transporte</option><option>Lazer</option><option>Contas</option><option>Salário</option>
-                            </select>
-                            <select id="banco" class="p-4 bg-slate-50 border-none rounded-2xl text-sm"></select>
-                        </div>
-                        <input type="date" id="data-input" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm">
-                        <button type="submit" class="w-full bg-metriaNavy text-metriaGold font-bold py-4 rounded-2xl text-sm">Registrar na Nuvem</button>
-                    </form>
-                </div>
-                <div class="bg-white p-8 rounded-3xl shadow-apple border border-slate-50 flex flex-col items-center">
-                    <h4 class="text-sm font-bold uppercase mb-6 self-start text-metriaNavy">Alocação de Gastos</h4>
-                    <canvas id="graficoDespesas" class="max-w-[250px]"></canvas>
+                <div class="flex items-center gap-2 glass p-2 rounded-2xl shadow-sm border-none">
+                    <button onclick="navegarMes(-1)" class="w-9 h-9 hover:bg-white rounded-xl transition-all"><i class="fas fa-chevron-left text-xs"></i></button>
+                    <span id="lbl-mes-atual" class="text-xs font-bold px-4 min-w-[140px] text-center capitalize">Maio 2026</span>
+                    <button onclick="navegarMes(1)" class="w-9 h-9 hover:bg-white rounded-xl transition-all"><i class="fas fa-chevron-right text-xs"></i></button>
                 </div>
             </div>
-            
-            <div class="bg-white rounded-3xl shadow-apple border border-slate-50 overflow-hidden">
-                <table class="w-full text-left"><tbody id="tabela-transacoes" class="divide-y divide-slate-50"></tbody></table>
-            </div>
-        </div>
 
-        <div id="aba-perfil" class="hidden space-y-8 animate-fade-in">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-3xl shadow-apple border border-slate-50">
-                    <h4 class="text-sm font-bold uppercase mb-6 text-metriaNavy">Informações Pessoais</h4>
-                    <div class="space-y-4">
-                        <div><label class="text-[10px] font-bold text-slate-400 uppercase">Nome Completo</label><p id="perfil-nome" class="text-sm font-medium">--</p></div>
-                        <div><label class="text-[10px] font-bold text-slate-400 uppercase">E-mail Vinculado</label><p id="perfil-email" class="text-sm font-medium">--</p></div>
-                        <div class="pt-4 border-t border-slate-50">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase">Renda Mensal Estimada</label>
-                            <input type="number" id="input-renda" placeholder="R$ 0,00" class="w-full mt-1 p-4 bg-slate-50 border-none rounded-2xl text-sm font-bold">
+            <div id="aba-geral" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass p-8 rounded-[2.5rem] card-apple">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Patrimônio Consolidado</p>
+                        <h3 id="saldo-total" class="text-3xl font-bold tracking-tighter">R$ 0,00</h3>
+                    </div>
+                    <div class="glass p-8 rounded-[2.5rem] card-apple">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Receitas (Mês)</p>
+                        <h3 id="total-receitas" class="text-3xl font-bold text-emerald-600 tracking-tighter">R$ 0,00</h3>
+                    </div>
+                    <div class="glass p-8 rounded-[2.5rem] card-apple">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Despesas (Mês)</p>
+                        <h3 id="total-despesas" class="text-3xl font-bold text-rose-600 tracking-tighter">R$ 0,00</h3>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 glass p-8 rounded-[2.5rem]">
+                        <h4 class="font-bold mb-6 text-sm opacity-50">NOVA TRANSAÇÃO</h4>
+                        <form onsubmit="adicionarTransacao(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="desc" required placeholder="Título" class="md:col-span-2 p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5 focus:bg-white focus:ring-black/20">
+                            <input type="number" step="0.01" id="valor" required placeholder="Valor R$" class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5 focus:bg-white">
+                            <select id="tipo-mov" class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
+                                <option value="despesa">Despesa</option><option value="receita">Receita</option>
+                            </select>
+                            <select id="cat" class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
+                                <option>Moradia</option><option>Alimentação</option><option>Transporte</option><option>Lazer</option><option>Renda</option>
+                            </select>
+                            <input type="date" id="data-mov" required class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
+                            <button class="md:col-span-2 bg-black text-white font-bold py-4 rounded-2xl hover:scale-[1.01] transition-all shadow-lg">Confirmar Lançamento</button>
+                        </form>
+                    </div>
+                    <div class="glass p-8 rounded-[2.5rem] flex flex-col items-center justify-center">
+                        <div class="w-full max-w-[200px]"><canvas id="chartGastos"></canvas></div>
+                        <p class="text-[10px] font-black text-slate-400 mt-6 tracking-widest uppercase">Gastos por Categoria</p>
+                    </div>
+                </div>
+
+                <div class="glass rounded-[2.5rem] overflow-hidden">
+                    <table class="w-full text-left text-sm"><tbody id="lista-transacoes" class="divide-y divide-black/5"></tbody></table>
+                </div>
+            </div>
+
+            <div id="aba-investimentos" class="hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass p-8 rounded-[2.5rem]">
+                        <h4 class="font-bold mb-6 text-sm opacity-50">ADICIONAR ATIVO</h4>
+                        <form onsubmit="adicionarAtivo(event)" class="space-y-4">
+                            <input type="text" id="ativo-ticker" required placeholder="Ticker (ex: BTC, AAPL)" class="w-full p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5 uppercase">
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="number" id="ativo-qtd" required placeholder="Qtd" class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
+                                <input type="number" step="0.01" id="ativo-preco" required placeholder="Preço" class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
+                            </div>
+                            <select id="ativo-tipo" class="w-full p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
+                                <option>Ações</option><option>Cripto</option><option>FIIs</option><option>Renda Fixa</option>
+                            </select>
+                            <button class="w-full bg-black text-white font-bold py-4 rounded-2xl shadow-xl">Salvar na Carteira</button>
+                        </form>
+                    </div>
+                    <div class="glass p-8 rounded-[2.5rem] flex items-center justify-center">
+                        <div class="w-full max-w-[220px]"><canvas id="chartInvest"></canvas></div>
+                    </div>
+                </div>
+                <div class="glass rounded-[2.5rem] overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-black/5 text-[10px] font-black uppercase text-slate-400"><tr class="border-b border-black/5"><th class="p-5">Ativo</th><th class="p-5">Tipo</th><th class="p-5">Qtd</th><th class="p-5 text-right">Total</th><th class="p-5"></th></tr></thead>
+                        <tbody id="lista-ativos" class="divide-y divide-black/5"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="aba-perfil" class="hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass p-8 rounded-[2.5rem]">
+                        <h4 class="font-bold mb-6 text-sm opacity-50">PERFIL FINANCEIRO</h4>
+                        <label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Renda Mensal Sugerida (R$)</label>
+                        <input type="number" id="perfil-renda" class="w-full p-4 bg-white/40 rounded-2xl text-2xl font-bold mb-6 border-none ring-1 ring-black/5">
+                        <button onclick="salvarPerfil()" class="w-full bg-black text-white py-4 rounded-2xl font-bold">Atualizar Metrias</button>
+                    </div>
+                    <div class="glass p-8 rounded-[2.5rem]">
+                        <h4 class="font-bold mb-6 text-sm opacity-50">OBJETIVOS PATRIMONIAIS</h4>
+                        <div id="container-metas" class="space-y-6"></div>
+                        <div class="mt-8 pt-8 border-t border-black/5 flex gap-2">
+                            <input type="text" id="meta-nome" placeholder="Meta" class="flex-1 p-3 bg-white/40 rounded-xl text-xs border-none ring-1 ring-black/5">
+                            <input type="number" id="meta-valor" placeholder="Alvo R$" class="w-24 p-3 bg-white/40 rounded-xl text-xs border-none ring-1 ring-black/5">
+                            <button onclick="adicionarMeta()" class="bg-black text-white px-4 rounded-xl text-xs"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
-                <div class="bg-white p-8 rounded-3xl shadow-apple border border-slate-50">
-                    <h4 class="text-sm font-bold uppercase mb-6 text-metriaNavy">Metas Financeiras</h4>
-                    <div class="space-y-6">
-                        <div>
-                            <div class="flex justify-between mb-2"><span class="text-xs font-bold">Reserva de Emergência</span><span class="text-xs font-bold text-metriaGold">65%</span></div>
-                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden"><div class="bg-metriaGold h-full w-[65%]"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-2"><span class="text-xs font-bold">Independência Financeira</span><span class="text-xs font-bold text-metriaNavy">12%</span></div>
-                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden"><div class="bg-metriaNavy h-full w-[12%]"></div></div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
-
-        <div id="aba-investimentos" class="hidden p-10 text-center text-slate-400">Em desenvolvimento...</div>
     </main>
 
     <script>
+        // FIREBASE SETUP
         const firebaseConfig = {
             apiKey: "AIzaSyAaAaFP6gC4nOuj4R1c4HZhPZo5ffHqUI4",
             authDomain: "financasapp-5de18.firebaseapp.com",
@@ -206,159 +211,149 @@
             messagingSenderId: "789455207825",
             appId: "1:789455207825:web:bd1e9cce13a313b4fc2e30"
         };
-
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        const auth = firebase.auth(), db = firebase.firestore();
 
-        let usuarioAtual = null;
-        let dataFiltroBase = new Date();
-        let transacoes = [];
-        let graficoDespesasCtx = null;
-        const bancos = ['Nubank', 'Itaú', 'Bradesco', 'XP', 'Inter', 'BTG', 'Carteira'];
+        let user = null, transacoes = [], ativos = [], metas = [], perfil = {};
+        let dataFiltro = new Date(), chartGastos = null, chartInvest = null;
 
-        // LOGIN COM GOOGLE
-        function loginGoogle() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).catch(err => alert("Erro ao autenticar com Google."));
-        }
+        function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+        function fazerLogout() { auth.signOut(); window.location.reload(); }
 
-        function toggleSidebar() {
-            const aside = document.getElementById('sidebar');
-            const icon = document.getElementById('toggle-icon');
-            const textos = document.querySelectorAll('.sidebar-text');
-            if (aside.style.width === '5.2rem') {
-                aside.style.width = '16rem';
-                icon.className = "fas fa-chevron-left text-xs";
-                setTimeout(() => textos.forEach(t => t.style.display = ''), 150);
-            } else {
-                aside.style.width = '5.2rem';
-                icon.className = "fas fa-chevron-right text-xs";
-                textos.forEach(t => t.style.display = 'none');
-            }
-        }
-
-        function mudarAba(a) {
-            document.getElementById('aba-geral').classList.toggle('hidden', a !== 'geral');
-            document.getElementById('aba-investimentos').classList.toggle('hidden', a !== 'investimentos');
-            document.getElementById('aba-perfil').classList.toggle('hidden', a !== 'perfil');
-            document.getElementById('titulo-aba').innerText = a === 'geral' ? 'Fluxo de Caixa' : (a === 'perfil' ? 'Perfil & Estratégia' : 'Investimentos');
-        }
-
-        auth.onAuthStateChanged(user => {
-            const authCont = document.getElementById('auth-container');
-            const hiddenAuth = document.querySelectorAll('.hidden-auth');
-            if (user) {
-                usuarioAtual = user;
-                authCont.classList.add('hidden');
-                hiddenAuth.forEach(el => el.classList.remove('hidden'));
-                
-                document.getElementById('desk-user-name').innerText = user.displayName || user.email;
-                document.getElementById('perfil-nome').innerText = user.displayName || "Não definido";
-                document.getElementById('perfil-email').innerText = user.email;
-
-                if (user.photoURL) {
+        auth.onAuthStateChanged(u => {
+            user = u;
+            document.getElementById('auth-container').classList.toggle('hidden', !!u);
+            document.getElementById('app-content').classList.toggle('hidden', !u);
+            if(u) {
+                document.getElementById('desk-user-name').innerText = u.displayName;
+                if(u.photoURL) { 
                     const img = document.getElementById('user-photo');
-                    img.src = user.photoURL; img.classList.remove('hidden');
+                    img.src = u.photoURL; img.classList.remove('hidden');
                     document.getElementById('user-initial').classList.add('hidden');
                 }
-                
-                // Carregar Renda salva
-                db.collection("perfil").doc(user.uid).get().then(doc => {
-                    if(doc.exists) document.getElementById('input-renda').value = doc.data().renda;
-                });
-
-                iniciarSincronizacao();
-            } else {
-                usuarioAtual = null;
-                authCont.classList.remove('hidden');
-                hiddenAuth.forEach(el => el.classList.add('hidden'));
+                syncData();
             }
         });
 
-        // Salvar Renda ao digitar
-        document.getElementById('input-renda')?.addEventListener('change', (e) => {
-            if(usuarioAtual) db.collection("perfil").doc(usuarioAtual.uid).set({ renda: e.target.value }, { merge: true });
-        });
-
-        function iniciarSincronizacao() {
-            db.collection("transacoes").where("userId", "==", usuarioAtual.uid).onSnapshot(snap => {
-                transacoes = [];
-                snap.forEach(doc => transacoes.push({ id: doc.id, ...doc.data() }));
-                atualizarInterfaceGeral();
+        function mudarAba(aba) {
+            ['geral', 'investimentos', 'perfil'].forEach(a => {
+                document.getElementById(`aba-${a}`).classList.toggle('hidden', a !== aba);
+                document.getElementById(`btn-${a}`).classList.toggle('sidebar-active', a === aba);
             });
-            const sel = document.getElementById('banco');
-            if(sel.options.length === 0) bancos.forEach(b => sel.innerHTML += `<option value="${b}">${b}</option>`);
-            document.getElementById('data-input').valueAsDate = new Date();
+            const titulos = { geral: ['Dashboard', 'Seu patrimônio consolidado.'], investimentos: ['Carteira', 'Ativos sob gestão.'], perfil: ['Objetivos', 'Seu planejamento estratégico.'] };
+            document.getElementById('main-title').innerText = titulos[aba][0];
+            document.getElementById('main-subtitle').innerText = titulos[aba][1];
+        }
+
+        function syncData() {
+            db.collection("transacoes").where("uid", "==", user.uid).onSnapshot(s => {
+                transacoes = s.docs.map(d => ({id: d.id, ...d.data()}));
+                updateUI();
+            });
+            db.collection("ativos").where("uid", "==", user.uid).onSnapshot(s => {
+                ativos = s.docs.map(d => ({id: d.id, ...d.data()}));
+                updateUI();
+            });
+            db.collection("perfil").doc(user.uid).onSnapshot(doc => {
+                if(doc.exists) {
+                    perfil = doc.data();
+                    document.getElementById('perfil-renda').value = perfil.renda || '';
+                    metas = perfil.metas || [];
+                    renderMetas();
+                }
+            });
+            document.getElementById('data-mov').valueAsDate = new Date();
         }
 
         function adicionarTransacao(e) {
             e.preventDefault();
             db.collection("transacoes").add({
-                userId: usuarioAtual.uid,
+                uid: user.uid,
                 desc: document.getElementById('desc').value,
                 valor: parseFloat(document.getElementById('valor').value),
-                tipo: document.getElementById('tipo-movimento').value,
-                categoria: document.getElementById('categoria').value,
-                banco: document.getElementById('banco').value,
-                data: document.getElementById('data-input').value
-            }).then(() => { document.getElementById('desc').value = ''; document.getElementById('valor').value = ''; });
+                tipo: document.getElementById('tipo-mov').value,
+                cat: document.getElementById('cat').value,
+                data: document.getElementById('data-mov').value
+            }).then(() => e.target.reset());
         }
 
-        function navegarMes(dir) {
-            dataFiltroBase.setMonth(dataFiltroBase.getMonth() + dir);
-            atualizarInterfaceGeral();
+        function adicionarAtivo(e) {
+            e.preventDefault();
+            db.collection("ativos").add({
+                uid: user.uid,
+                ticker: document.getElementById('ativo-ticker').value.toUpperCase(),
+                qtd: parseFloat(document.getElementById('ativo-qtd').value),
+                preco: parseFloat(document.getElementById('ativo-preco').value),
+                tipo: document.getElementById('ativo-tipo').value
+            }).then(() => e.target.reset());
         }
 
-        function atualizarInterfaceGeral() {
-            const mes = dataFiltroBase.getMonth(), ano = dataFiltroBase.getFullYear();
-            const nomes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-            document.getElementById('lbl-mes-atual').innerText = `${nomes[mes]} ${ano}`;
+        function adicionarMeta() {
+            const n = document.getElementById('meta-nome').value, v = parseFloat(document.getElementById('meta-valor').value);
+            if(n && v) {
+                metas.push({ nome: n, valor: v });
+                db.collection("perfil").doc(user.uid).set({ metas }, { merge: true });
+                document.getElementById('meta-nome').value = ''; document.getElementById('meta-valor').value = '';
+            }
+        }
 
-            let sG = 0, rec = 0, des = 0, catDados = {};
-            const transMes = transacoes.filter(t => {
-                const p = t.data.split('-');
-                const isMes = parseInt(p[1]) === (mes + 1) && parseInt(p[0]) === ano;
-                if (t.tipo === 'receita') sG += t.valor; else sG -= t.valor;
-                return isMes;
-            });
+        function salvarPerfil() {
+            const r = document.getElementById('perfil-renda').value;
+            db.collection("perfil").doc(user.uid).set({ renda: r }, { merge: true });
+        }
 
-            const tbody = document.getElementById('tabela-transacoes');
-            tbody.innerHTML = '';
-            transMes.forEach(t => {
-                if (t.tipo === 'receita') rec += t.valor; else {
-                    des += t.valor;
-                    catDados[t.categoria] = (catDados[t.categoria] || 0) + t.valor;
+        function navegarMes(dir) { dataFiltro.setMonth(dataFiltro.getMonth() + dir); updateUI(); }
+
+        function updateUI() {
+            const m = dataFiltro.getMonth(), y = dataFiltro.getFullYear();
+            const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+            document.getElementById('lbl-mes-atual').innerText = `${meses[m]} ${y}`;
+
+            let patrimônio = 0, rec = 0, des = 0, catMap = {}, invMap = {};
+
+            const listaT = document.getElementById('lista-transacoes'); listaT.innerHTML = '';
+            transacoes.forEach(t => {
+                if(t.tipo === 'receita') patrimônio += t.valor; else patrimônio -= t.valor;
+                const dt = t.data.split('-');
+                if(parseInt(dt[1]) === (m+1) && parseInt(dt[0]) === y) {
+                    if(t.tipo === 'receita') rec += t.valor; else { des += t.valor; catMap[t.cat] = (catMap[t.cat] || 0) + t.valor; }
+                    listaT.innerHTML += `<tr class="p-4 hover:bg-black/5 transition"><td class="p-5 font-bold">${t.desc}</td><td class="p-5 text-slate-400 text-[10px] font-bold uppercase">${t.cat}</td><td class="p-5 text-right font-black ${t.tipo === 'receita' ? 'text-emerald-600' : 'text-rose-600'}">R$ ${t.valor.toLocaleString('pt-BR')}</td><td class="p-5 text-right"><button onclick="db.collection('transacoes').doc('${t.id}').delete()"><i class="fas fa-times opacity-20 hover:opacity-100"></i></button></td></tr>`;
                 }
-                tbody.innerHTML += `<tr class="hover:bg-slate-50 transition"><td class="p-4 font-bold text-slate-800">${t.desc} <span class="block text-[9px] text-slate-400 uppercase tracking-tighter">${t.banco}</span></td><td class="p-4 text-right ${t.tipo === 'receita' ? 'text-emerald-600' : 'text-rose-600'} font-bold">R$ ${t.valor.toFixed(2)}</td><td class="p-4 text-right"><button onclick="db.collection('transacoes').doc('${t.id}').delete()"><i class="fas fa-times text-slate-200 hover:text-rose-500 transition"></i></button></td></tr>`;
             });
 
-            document.getElementById('saldo-total').innerText = `R$ ${sG.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('total-receitas').innerText = `R$ ${rec.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('total-despesas').innerText = `R$ ${des.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            const listaA = document.getElementById('lista-ativos'); listaA.innerHTML = '';
+            ativos.forEach(a => {
+                const tot = a.qtd * a.preco; patrimônio += tot;
+                invMap[a.tipo] = (invMap[a.tipo] || 0) + tot;
+                listaA.innerHTML += `<tr class="hover:bg-black/5 transition"><td class="p-5 font-black">${a.ticker}</td><td class="p-5 text-xs text-slate-400">${a.tipo}</td><td class="p-5 font-medium">${a.qtd}</td><td class="p-5 text-right font-black">R$ ${tot.toLocaleString('pt-BR')}</td><td class="p-5 text-right"><button onclick="db.collection('ativos').doc('${a.id}').delete()"><i class="fas fa-trash opacity-10"></i></button></td></tr>`;
+            });
 
-            renderizarGrafico(catDados);
+            document.getElementById('saldo-total').innerText = `R$ ${patrimônio.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('total-receitas').innerText = `R$ ${rec.toFixed(2)}`;
+            document.getElementById('total-despesas').innerText = `R$ ${des.toFixed(2)}`;
+
+            renderCharts(catMap, invMap);
+            renderMetas(patrimônio);
         }
 
-        function renderizarGrafico(dados) {
-            const ctx = document.getElementById('graficoDespesas').getContext('2d');
-            if (graficoDespesasCtx) graficoDespesasCtx.destroy();
-            graficoDespesasCtx = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: Object.keys(dados),
-                    datasets: [{
-                        data: Object.values(dados),
-                        backgroundColor: ['#1a1c2e', '#d4af37', '#e2e8f0', '#cbd5e1', '#94a3b8'],
-                        borderWidth: 0
-                    }]
-                },
-                options: { cutout: '80%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+        function renderCharts(gastos, invest) {
+            const config = (id, map, colors) => {
+                const c = document.getElementById(id).getContext('2d');
+                return new Chart(c, { type: 'doughnut', data: { labels: Object.keys(map), datasets: [{ data: Object.values(map), backgroundColor: colors, borderWidth: 0 }] }, options: { cutout: '85%', plugins: { legend: { display: false } } } });
+            }
+            if(chartGastos) chartGastos.destroy(); if(chartInvest) chartInvest.destroy();
+            chartGastos = config('chartGastos', gastos, ['#000', '#888', '#007AFF', '#5856D6']);
+            chartInvest = config('chartInvest', invest, ['#000', '#FF9500', '#34C759', '#AF52DE']);
+        }
+
+        function renderMetas(patrimonio) {
+            const cont = document.getElementById('container-metas');
+            cont.innerHTML = metas.length ? '' : '<p class="text-[10px] text-slate-400 font-bold uppercase">Sem objetivos definidos.</p>';
+            metas.forEach(m => {
+                const p = Math.min((patrimonio / m.valor) * 100, 100).toFixed(1);
+                cont.innerHTML += `<div><div class="flex justify-between mb-2 text-[10px] font-black uppercase"><span>${m.nome}</span><span>${p}%</span></div><div class="w-full bg-black/5 h-2 rounded-full overflow-hidden"><div class="bg-black h-full transition-all duration-1000" style="width: ${p}%"></div></div></div>`;
             });
         }
-
-        function processarLogin(e) { e.preventDefault(); auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-senha').value); }
-        function fazerLogout() { auth.signOut(); }
     </script>
 </body>
 </html>
