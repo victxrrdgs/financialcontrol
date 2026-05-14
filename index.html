@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanças App</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        appbg: '#f8fafc',
+                        cardbg: '#ffffff',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-appbg text-slate-700 font-sans min-h-screen pb-12">
+
+    <header class="bg-slate-900 text-white py-6 shadow-md">
+        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-wide"><i class="fas fa-wallet text-emerald-400 mr-2"></i> Finanças<span class="text-emerald-400">App</span></h1>
+            <span class="text-xs bg-slate-800 text-slate-400 px-3 py-1 rounded-full border border-slate-700">Versão 2.0 • Salvo no Navegador</span>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 mt-8">
+        
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-cardbg p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center border-l-4 border-indigo-500">
+                <div>
+                    <p class="text-sm text-slate-400 uppercase font-semibold">Saldo Atual</p>
+                    <h2 class="text-3xl font-bold text-slate-800 mt-1" id="saldo-total">R$ 0,00</h2>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-full text-indigo-500">
+                    <i class="fas fa-university text-xl"></i>
+                </div>
+            </div>
+            <div class="bg-cardbg p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center border-l-4 border-emerald-500">
+                <div>
+                    <p class="text-sm text-slate-400 uppercase font-semibold">Receitas</p>
+                    <h2 class="text-3xl font-bold text-emerald-600 mt-1" id="total-receitas">R$ 0,00</h2>
+                </div>
+                <div class="bg-emerald-50 p-4 rounded-full text-emerald-500">
+                    <i class="fas fa-arrow-trend-up text-xl"></i>
+                </div>
+            </div>
+            <div class="bg-cardbg p-6 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center border-l-4 border-rose-500">
+                <div>
+                    <p class="text-sm text-slate-400 uppercase font-semibold">Despesas</p>
+                    <h2 class="text-3xl font-bold text-rose-600 mt-1" id="total-despesas">R$ 0,00</h2>
+                </div>
+                <div class="bg-rose-50 p-4 rounded-full text-rose-500">
+                    <i class="fas fa-arrow-trend-down text-xl"></i>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-8">
+            <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fas fa-piggy-bank mr-2 text-slate-400"></i>Saldo por Conta</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="lista-bancos">
+                </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            
+            <div class="bg-cardbg p-6 rounded-xl shadow-sm border border-slate-100 lg:col-span-2">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4"><i class="fas fa-plus-circle mr-2 text-emerald-500"></i>Nova Transação</h3>
+                
+                <form id="form-transacao" onsubmit="adicionarTransacao(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Descrição</label>
+                        <input type="text" id="desc" required placeholder="Ex: Conta de Luz, Salário, Jantar" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-500 text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Valor (R$)</label>
+                        <input type="number" step="0.01" id="valor" required placeholder="0.00" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-500 text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Tipo</label>
+                        <select id="tipo" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-500 text-sm">
+                            <option value="despesa">Despesa Saída (-)</option>
+                            <option value="receita">Receita Entrada (+)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Categoria</label>
+                        <select id="categoria" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-500 text-sm">
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Moradia">Moradia</option>
+                            <option value="Transporte">Transporte</option>
+                            <option value="Lazer">Lazer</option>
+                            <option value="Serviços">Serviços</option>
+                            <option value="Salário/Renda">Salário/Renda</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Conta/Banco</label>
+                        <select id="banco" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-500 text-sm">
+                            <option value="Nubank">Nubank</option>
+                            <option value="Itaú">Itaú</option>
+                            <option value="Inter">Banco Inter</option>
+                            <option value="Carteira">Carteira (Físico)</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2 mt-2">
+                        <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 rounded-lg transition duration-200 text-sm shadow-sm">
+                            Registrar Transação
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="bg-cardbg p-6 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center">
+                <h3 class="text-lg font-semibold text-slate-800 mb-4 self-start"><i class="fas fa-chart-pie mr-2 text-indigo-500"></i>Gastos por Categoria</h3>
+                <div class="w-full max-w-[220px]">
+                    <canvas id="graficoCategorias"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-cardbg rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-slate-800"><i class="fas fa-list mr-2 text-slate-400"></i>Histórico de Lançamentos</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-400 text-xs uppercase font-semibold border-b border-slate-100">
+                            <th class="p-4">Descrição</th>
+                            <th class="p-4">Categoria</th>
+                            <th class="p-4">Conta</th>
+                            <th class="p-4">Valor</th>
+                            <th class="p-4 text-center">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-transacoes" class="text-sm divide-y divide-slate-100">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // 1. Inicialização dos dados buscando do LocalStorage (ou array vazio se for a primeira vez)
+        let transacoes = JSON.parse(localStorage.getItem('financas_transacoes')) || [];
+        let grafico = null;
+
+        // Lista fixa de bancos disponíveis para o cálculo de saldo individual
+        const bancosCadastrados = ['Nubank', 'Itaú', 'Inter', 'Carteira'];
+
+        // Função para formatar valores em Moeda Real (R$)
+        function formatarMoeda(valor) {
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
+        }
+
+        // Função principal que atualiza toda a interface visual (Reatividade)
+        function atualizarInterface() {
+            let saldo = 0;
+            let receitas = 0;
+            let despesas = 0;
+            
+            // Objeto para guardar o saldo de cada banco
+            let saldoBancos = { 'Nubank': 0, 'Itaú': 0, 'Inter': 0, 'Carteira': 0 };
+            // Objeto para agrupar gastos por categoria (para o gráfico)
+            let gastosCategoria = {};
+
+            // Limpa a tabela antes de recriar
+            const tbody = document.getElementById('tabela-transacoes');
+            tbody.innerHTML = '';
+
+            // Processa cada transação salva
+            transacoes.forEach((t, index) => {
+                const valorFloat = parseFloat(t.valor);
+
+                // Cálculos gerais e por banco
+                if (t.tipo === 'receita') {
+                    receitas += valorFloat;
+                    saldo += valorFloat;
+                    if(saldoBancos[t.banco] !== undefined) saldoBancos[t.banco] += valorFloat;
+                } else {
+                    despesas += valorFloat;
+                    saldo -= valorFloat;
+                    if(saldoBancos[t.banco] !== undefined) saldoBancos[t.banco] -= valorFloat;
+                    
+                    // Somando para o gráfico de categorias (apenas despesas)
+                    gastosCategoria[t.categoria] = (gastosCategoria[t.categoria] || 0) + valorFloat;
+                }
+
+                // Criação da linha na tabela de histórico
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition duration-150";
+                
+                const corValor = t.tipo === 'receita' ? 'text-emerald-600 font-semibold' : 'text-rose-600 font-semibold';
+                const sinal = t.tipo === 'receita' ? '+' : '-';
+
+                tr.innerHTML = `
+                    <td class="p-4 font-medium text-slate-800">${t.desc}</td>
+                    <td class="p-4"><span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-xs">${t.categoria}</span></td>
+                    <td class="p-4 text-slate-500">${t.banco}</td>
+                    <td class="p-4 ${corValor}">${sinal} ${formatarMoeda(valorFloat)}</td>
+                    <td class="p-4 text-center">
+                        <button onclick="deletarTransacao(${index})" class="text-slate-300 hover:text-rose-500 transition duration-150">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Se não houver transações, mostra mensagem na tabela
+            if(transacoes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400">Nenhuma transação cadastrada ainda.</td></tr>`;
+            }
+
+            // Atualiza os Cards Superiores
+            document.getElementById('saldo-total').innerText = formatarMoeda(saldo);
+            document.getElementById('total-receitas').innerText = formatarMoeda(receitas);
+            document.getElementById('total-despesas').innerText = formatarMoeda(despesas);
+
+            // Renderiza os Saldos por Banco
+            const divBancos = document.getElementById('lista-bancos');
+            divBancos.innerHTML = '';
+            bancosCadastrados.forEach(banco => {
+                const valorBanco = saldoBancos[banco];
+                const corTexto = valorBanco >= 0 ? 'text-slate-800' : 'text-rose-600';
+                
+                divBancos.innerHTML += `
+                    <div class="bg-cardbg p-3 rounded-lg border border-slate-100 shadow-sm text-center">
+                        <p class="text-xs text-slate-400 font-medium">${banco}</p>
+                        <p class="text-sm font-bold ${corTexto} mt-0.5">${formatarMoeda(valorBanco)}</p>
+                    </div>
+                `;
+            });
+
+            // Salva os dados atualizados no navegador
+            localStorage.setItem('financas_transacoes', JSON.stringify(transacoes));
+
+            // Atualiza o Gráfico
+            atualizarGrafico(gastosCategoria);
+        }
+
+        // Função acionada pelo formulário para criar um novo registro
+        function adicionarTransacao(event) {
+            event.preventDefault(); // Evita que a página recarregue
+
+            const novaTransacao = {
+                desc: document.getElementById('desc').value,
+                valor: document.getElementById('valor').value,
+                tipo: document.getElementById('tipo').value,
+                categoria: document.getElementById('categoria').value,
+                banco: document.getElementById('banco').value,
+                data: new Date().toISOString()
+            };
+
+            transacoes.push(novaTransacao);
+            atualizarInterface();
+
+            // Reseta apenas texto e valor, mantém as seleções para facilitar novos cadastros
+            document.getElementById('desc').value = '';
+            document.getElementById('valor').value = '';
+            document.getElementById('desc').focus();
+        }
+
+        // Função para deletar um item específico pelo seu índice no Array
+        function deletarTransacao(index) {
+            transacoes.splice(index, 1);
+            atualizarInterface();
+        }
+
+        // Função que desenha e gerencia o Gráfico Chart.js
+        function atualizarGrafico(dadosCategoria) {
+            const ctx = document.getElementById('graficoCategorias').getContext('2d');
+            
+            const labels = Object.keys(dadosCategoria);
+            const data = Object.values(dadosCategoria);
+
+            // Destrói o gráfico anterior se existir para evitar sobreposição
+            if (grafico) {
+                grafico.destroy();
+            }
+
+            // Se não houver dados de despesa, desenha um gráfico cinza vazio
+            if (labels.length === 0) {
+                grafico = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Sem Despesas'],
+                        datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }]
+                    },
+                    options: { plugins: { legend: { display: false } } }
+                });
+                return;
+            }
+
+            // Cria o novo gráfico animado
+            grafico = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#f43f5e', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#64748b'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Executa a atualização inicial assim que o site abre
+        atualizarInterface();
+    </script>
+</body>
+</html>
