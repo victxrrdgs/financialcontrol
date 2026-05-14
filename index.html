@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finanças & Investimentos Pro</title>
+    <title>Metria — O design da sua liberdade financeira</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -17,9 +17,21 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { appbg: '#f8fafc', cardbg: '#ffffff', brand: '#059669' },
-                    animation: { 'fade-in': 'fadeIn 0.3s ease-out' },
-                    keyframes: { fadeIn: { '0%': { opacity: 0, transform: 'scale(0.99)' }, '100%': { opacity: 1, transform: 'scale(1)' } } }
+                    colors: {
+                        appleBg: '#f5f5f7',
+                        appleCard: '#ffffff',
+                        appleText: '#1d1d1f',
+                        appleMuted: '#86868b',
+                        appleAccent: '#0071e3',
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'apple-sm': '0 2px 8px rgba(0, 0, 0, 0.04)',
+                        'apple-md': '0 4px 20px rgba(0, 0, 0, 0.06)',
+                        'apple-lg': '0 10px 30px rgba(0, 0, 0, 0.08)',
+                    }
                 }
             }
         }
@@ -27,188 +39,212 @@
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        /* Transição suave para a largura da barra lateral */
-        #sidebar { transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        /* Transição global suave para a largura da drawer lateral */
+        #sidebar { transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* Fundo com leve desfoque radial simulando profundidade premium */
+        body { background-image: radial-gradient(circle at 50% 0%, #ffffff 0%, #f5f5f7 100%); }
     </style>
 </head>
-<body class="bg-appbg text-slate-700 font-sans min-h-screen flex flex-col md:flex-row pb-16 md:pb-0">
+<body class="bg-appleBg text-appleText font-sans min-h-screen flex flex-col md:flex-row pb-20 md:pb-0 antialiased selection:bg-slate-900 selection:text-white">
 
-    <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-slate-900 text-white min-h-screen shrink-0 border-r border-slate-800 p-4 justify-between sticky top-0 z-40 overflow-hidden">
-        <div class="space-y-6">
-            <div class="flex items-center justify-between px-2 pt-2">
+    <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-appleCard/80 backdrop-blur-md min-h-screen shrink-0 border-r border-slate-200/60 p-4 justify-between sticky top-0 z-40 overflow-hidden shadow-apple-sm">
+        <div class="space-y-8">
+            <div class="flex items-center justify-between px-2 pt-3">
                 <div class="flex items-center gap-3 overflow-hidden">
-                    <div class="bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-900 p-2.5 rounded-xl shadow-md font-bold shrink-0">
-                        <i class="fas fa-layer-group text-lg w-5 h-5 flex items-center justify-center"></i>
+                    <div class="w-8 h-8 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold shadow-sm shrink-0">
+                        <span class="text-sm font-serif tracking-tighter">M</span>
                     </div>
-                    <div class="sidebar-text transition-opacity duration-200">
-                        <h1 class="text-base font-extrabold tracking-tight leading-none">Finanças<span class="text-emerald-400">Pro</span></h1>
-                        <span class="text-[10px] text-slate-400 font-medium">Gestão Patrimonial</span>
+                    <div class="sidebar-text transition-opacity duration-200 shrink-0">
+                        <h1 class="text-base font-bold tracking-tight leading-none text-slate-900">Metria</h1>
+                        <span class="text-[10px] text-appleMuted font-medium tracking-wide">Wealth Management</span>
                     </div>
                 </div>
-                <button onclick="toggleSidebar()" class="text-slate-500 hover:text-slate-300 p-1.5 rounded-lg border border-slate-800 hover:bg-slate-800 transition">
+                <button onclick="toggleSidebar()" title="Recolher menu" class="text-appleMuted hover:text-slate-900 p-1.5 rounded-full hover:bg-slate-100 transition duration-150">
                     <i id="toggle-icon" class="fas fa-chevron-left text-xs"></i>
                 </button>
             </div>
 
-            <nav class="space-y-2 hidden-auth">
-                <p class="sidebar-text text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2 mb-2 transition-opacity duration-200">Menu</p>
+            <nav class="space-y-1.5 hidden-auth">
+                <p class="sidebar-text text-[10px] font-semibold text-appleMuted uppercase tracking-wider px-3 mb-3 transition-opacity duration-200">Painel Geral</p>
                 
-                <button onclick="mudarAba('geral')" id="tab-btn-geral" title="Fluxo de Caixa" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow-sm transition duration-150 overflow-hidden">
-                    <i class="fas fa-wallet text-sm w-5 shrink-0 text-center"></i> 
-                    <span class="sidebar-text shrink-0 transition-opacity duration-200">Fluxo de Caixa</span>
+                <button onclick="mudarAba('geral')" id="tab-btn-geral" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-slate-900 text-white shadow-sm transition duration-200 overflow-hidden group">
+                    <i class="fas fa-layer-group text-sm w-5 shrink-0 text-center transition-transform group-hover:scale-110"></i> 
+                    <span class="sidebar-text shrink-0 transition-opacity duration-200 tracking-wide font-medium">Fluxo de Caixa</span>
                 </button>
                 
-                <button onclick="mudarAba('investimentos')" id="tab-btn-investimentos" title="Investimentos" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition duration-150 overflow-hidden">
-                    <i class="fas fa-chart-line text-sm w-5 shrink-0 text-center"></i> 
-                    <span class="sidebar-text shrink-0 transition-opacity duration-200">Investimentos</span>
+                <button onclick="mudarAba('investimentos')" id="tab-btn-investimentos" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-appleMuted hover:text-slate-900 hover:bg-slate-100/80 transition duration-200 overflow-hidden group">
+                    <i class="fas fa-chart-pie text-sm w-5 shrink-0 text-center transition-transform group-hover:scale-110"></i> 
+                    <span class="sidebar-text shrink-0 transition-opacity duration-200 tracking-wide font-medium">Investimentos</span>
                 </button>
             </nav>
         </div>
 
-        <div class="border-t border-slate-800 pt-4 hidden-auth overflow-hidden">
-            <div class="flex items-center justify-between bg-slate-800/50 p-2 rounded-xl border border-slate-800">
-                <div class="flex items-center gap-2 overflow-hidden pl-1">
-                    <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold shrink-0">
-                        <i class="fas fa-user-check text-[10px]"></i>
+        <div class="border-t border-slate-100 pt-4 hidden-auth overflow-hidden">
+            <div class="flex items-center justify-between bg-slate-50/80 p-2 rounded-xl border border-slate-100/60">
+                <div class="flex items-center gap-2.5 overflow-hidden pl-1">
+                    <div class="w-6 h-6 rounded-full bg-slate-200/80 text-slate-700 flex items-center justify-center shrink-0">
+                        <i class="fas fa-user text-[10px]"></i>
                     </div>
                     <div class="sidebar-text overflow-hidden transition-opacity duration-200">
-                        <p id="desk-user-name" class="text-xs font-bold text-slate-200 truncate"></p>
+                        <p id="desk-user-name" class="text-xs font-semibold text-slate-800 truncate"></p>
                     </div>
                 </div>
-                <button onclick="fazerLogout()" title="Sair do Sistema" class="text-slate-500 hover:text-rose-400 p-1.5 rounded-lg transition shrink-0">
+                <button onclick="fazerLogout()" title="Sair da Conta" class="text-appleMuted hover:text-rose-600 p-1.5 rounded-lg transition duration-150 shrink-0">
                     <i class="fas fa-sign-out-alt text-xs"></i>
                 </button>
             </div>
         </div>
     </aside>
 
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 z-50 flex justify-around items-center px-4 py-2 hidden-auth">
-        <button onclick="mudarAba('geral')" id="mob-btn-geral" class="flex flex-col items-center gap-1 text-emerald-400 p-2">
-            <i class="fas fa-wallet text-base"></i><span class="text-[9px] font-bold">Caixa</span>
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-appleCard/90 backdrop-blur-md border-t border-slate-200/60 z-50 flex justify-around items-center px-6 py-2 hidden-auth shadow-apple-lg">
+        <button onclick="mudarAba('geral')" id="mob-btn-geral" class="flex flex-col items-center gap-1 text-slate-900 p-2">
+            <i class="fas fa-layer-group text-base"></i><span class="text-[10px] font-medium tracking-tight">Caixa</span>
         </button>
-        <button onclick="mudarAba('investimentos')" id="mob-btn-investimentos" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-300 p-2">
-            <i class="fas fa-chart-line text-base"></i><span class="text-[9px] font-bold">Ativos</span>
+        <button onclick="mudarAba('investimentos')" id="mob-btn-investimentos" class="flex flex-col items-center gap-1 text-appleMuted hover:text-slate-900 p-2 transition">
+            <i class="fas fa-chart-pie text-base"></i><span class="text-[10px] font-medium tracking-tight">Ativos</span>
         </button>
-        <button onclick="fazerLogout()" class="flex flex-col items-center gap-1 text-slate-500 hover:text-rose-400 p-2">
-            <i class="fas fa-sign-out-alt text-base"></i><span class="text-[9px] font-bold">Sair</span>
+        <button onclick="fazerLogout()" class="flex flex-col items-center gap-1 text-appleMuted hover:text-rose-600 p-2 transition">
+            <i class="fas fa-sign-out-alt text-base"></i><span class="text-[10px] font-medium tracking-tight">Sair</span>
         </button>
     </nav>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 overflow-x-hidden">
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 md:p-10 overflow-x-hidden">
         
-        <header class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8 pb-4 border-b border-slate-200/60">
-            <div class="flex items-center justify-between">
-                <div class="md:hidden flex items-center gap-2">
-                    <div class="bg-emerald-500 text-slate-900 p-2 rounded-lg font-bold text-xs"><i class="fas fa-layer-group"></i></div>
-                    <h2 class="text-lg font-bold text-slate-800">Finanças<span class="text-emerald-500">Pro</span></h2>
+        <header class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-10 pb-5 border-b border-slate-200/60">
+            <div>
+                <div class="md:hidden flex items-center gap-2 mb-3">
+                    <div class="w-6 h-6 bg-slate-900 text-white rounded-lg flex items-center justify-center font-bold"><span class="text-xs">M</span></div>
+                    <span class="text-xs font-bold text-slate-900 tracking-tight">Metria</span>
                 </div>
-                <div class="hidden md:block">
-                    <h2 id="titulo-aba" class="text-2xl font-extrabold text-slate-800 tracking-tight">Fluxo de Caixa</h2>
-                    <p id="subtitulo-aba" class="text-xs text-slate-400 font-medium mt-0.5">Gestão de receitas e despesas</p>
-                </div>
+                <h2 id="titulo-aba" class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Fluxo de Caixa</h2>
+                <p id="subtitulo-aba" class="text-xs sm:text-sm text-appleMuted font-normal mt-1 tracking-wide">Patrimônio sob controle absoluto</p>
             </div>
 
-            <div id="controle-meses" class="hidden-auth flex items-center justify-between sm:justify-end gap-2 bg-white border border-slate-200/80 p-1.5 rounded-xl shadow-xs">
-                <button onclick="navegarMes(-1)" title="Mês anterior" class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition">
-                    <i class="fas fa-chevron-left text-xs"></i>
+            <div id="controle-meses" class="hidden-auth flex items-center justify-between sm:justify-end gap-1.5 bg-appleCard border border-slate-200/80 p-1 rounded-xl shadow-apple-sm">
+                <button onclick="navegarMes(-1)" title="Mês anterior" class="p-2.5 text-appleMuted hover:text-slate-900 hover:bg-slate-50 rounded-lg transition duration-150">
+                    <i class="fas fa-arrow-left text-xs"></i>
                 </button>
-                <div class="px-3 py-1 text-center min-w-[120px]">
-                    <p id="lbl-mes-atual" class="text-xs font-extrabold text-slate-700 capitalize">Maio 2026</p>
-                    <span id="lbl-status-mes" class="text-[9px] text-emerald-600 font-bold block leading-none mt-0.5">Mês Atual</span>
+                <div class="px-3 py-1 text-center min-w-[130px]">
+                    <p id="lbl-mes-atual" class="text-xs font-bold text-slate-900 capitalize tracking-wide">Maio 2026</p>
+                    <span id="lbl-status-mes" class="text-[9px] text-appleAccent font-semibold block leading-none mt-0.5 tracking-wider uppercase">Mês Atual</span>
                 </div>
-                <button onclick="navegarMes(1)" title="Próximo mês" class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-50 rounded-lg transition">
-                    <i class="fas fa-chevron-right text-xs"></i>
+                <button onclick="navegarMes(1)" title="Próximo mês" class="p-2.5 text-appleMuted hover:text-slate-900 hover:bg-slate-50 rounded-lg transition duration-150">
+                    <i class="fas fa-arrow-right text-xs"></i>
                 </button>
             </div>
         </header>
 
-        <div id="auth-container" class="max-w-md mx-auto my-12 animate-fade-in">
-            <div id="tela-login" class="bg-cardbg p-8 rounded-3xl shadow-sm border border-slate-100">
-                <div class="text-center mb-6">
-                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl"><i class="fas fa-lock"></i></div>
-                    <h3 class="text-xl font-bold text-slate-800">Acesso Seguro</h3>
-                    <p class="text-xs text-slate-400 mt-1">Conecte-se para gerenciar seu patrimônio</p>
+        <div id="auth-container" class="max-w-sm mx-auto my-16 transition-all duration-300">
+            <div id="tela-login" class="bg-appleCard p-8 rounded-2xl shadow-apple-md border border-slate-100">
+                <div class="text-center mb-8">
+                    <h3 class="text-xl font-bold text-slate-900 tracking-tight">Acesso à Metria</h3>
+                    <p class="text-xs text-appleMuted mt-1.5">Insira suas credenciais corporativas</p>
                 </div>
                 <form onsubmit="processarLogin(event)" class="space-y-4">
-                    <input type="email" id="login-email" required placeholder="E-mail" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500">
-                    <input type="password" id="login-senha" required placeholder="Senha" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-emerald-500">
-                    <p id="erro-login" class="text-xs text-rose-500 text-center font-bold hidden"></p>
-                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-sm transition">Entrar</button>
-                    <p class="text-xs text-center text-slate-500 pt-4 border-t border-slate-50">Não possui conta? <a href="javascript:void(0)" onclick="alternarAuth('cadastro')" class="text-emerald-600 font-bold underline">Cadastre-se</a></p>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">E-mail</label>
+                        <input type="email" id="login-email" required placeholder="nome@provedor.com" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition duration-200">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">Senha</label>
+                        <input type="password" id="login-senha" required placeholder="••••••••" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition duration-200">
+                    </div>
+                    <p id="erro-login" class="text-xs text-rose-600 bg-rose-50/80 border border-rose-100 p-2.5 rounded-lg text-center font-medium hidden"></p>
+                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 rounded-xl text-sm transition duration-200 shadow-sm active:scale-[0.99] pt-3.5">
+                        Iniciar Sessão
+                    </button>
+                    <div class="pt-6 border-t border-slate-100 text-center">
+                        <p class="text-xs text-appleMuted">Novo na plataforma? <a href="javascript:void(0)" onclick="alternarAuth('cadastro')" class="text-slate-900 font-semibold underline hover:text-appleAccent transition">Criar conta</a></p>
+                    </div>
                 </form>
             </div>
 
-            <div id="tela-cadastro" class="bg-cardbg p-8 rounded-3xl shadow-sm border border-slate-100 hidden">
-                <div class="text-center mb-6">
-                    <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl"><i class="fas fa-user-plus"></i></div>
-                    <h3 class="text-xl font-bold text-slate-800">Nova Conta</h3>
-                    <p class="text-xs text-slate-400 mt-1">Nuvem e criptografia ativadas</p>
+            <div id="tela-cadastro" class="bg-appleCard p-8 rounded-2xl shadow-apple-md border border-slate-100 hidden">
+                <div class="text-center mb-8">
+                    <h3 class="text-xl font-bold text-slate-900 tracking-tight">Criar Identidade</h3>
+                    <p class="text-xs text-appleMuted mt-1.5">Criptografia e nuvem integradas</p>
                 </div>
-                <form onsubmit="processarCadastro(event)" class="space-y-3">
-                    <input type="text" id="cad-nome" required placeholder="Seu Nome" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500">
-                    <input type="email" id="cad-email" required placeholder="E-mail" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500">
-                    <input type="password" id="cad-senha" required placeholder="Senha (mín. 6)" oninput="validarSenha()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500">
-                    <input type="password" id="cad-senha-conf" required placeholder="Confirme a Senha" oninput="validarSenha()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-indigo-500">
-                    <p id="erro-cad" class="text-xs text-rose-500 text-center font-bold hidden"></p>
-                    <button type="submit" id="btn-submit-cad" disabled class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 text-white font-bold py-3 rounded-xl text-sm transition">Registrar</button>
-                    <p class="text-xs text-center text-slate-500 pt-4 border-t border-slate-50">Já tem conta? <a href="javascript:void(0)" onclick="alternarAuth('login')" class="text-slate-800 font-bold underline">Login</a></p>
+                <form onsubmit="processarCadastro(event)" class="space-y-3.5">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1 pl-0.5">Nome</label>
+                        <input type="text" id="cad-nome" required placeholder="Seu Nome" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1 pl-0.5">E-mail</label>
+                        <input type="email" id="cad-email" required placeholder="nome@provedor.com" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1 pl-0.5">Senha Forte (mín. 6)</label>
+                        <input type="password" id="cad-senha" required placeholder="••••••••" oninput="validarSenha()" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1 pl-0.5">Confirmar Senha</label>
+                        <input type="password" id="cad-senha-conf" required placeholder="••••••••" oninput="validarSenha()" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition">
+                    </div>
+                    <p id="erro-cad" class="text-xs text-rose-600 bg-rose-50/80 border border-rose-100 p-2.5 rounded-lg text-center font-medium hidden"></p>
+                    <button type="submit" id="btn-submit-cad" disabled class="w-full bg-slate-900 hover:bg-slate-800 disabled:bg-slate-100 disabled:text-slate-400 disabled:border disabled:border-slate-200 text-white font-medium py-3 rounded-xl text-sm transition duration-200 shadow-sm pt-3.5">
+                        Concluir Registro
+                    </button>
+                    <div class="pt-6 border-t border-slate-100 text-center">
+                        <p class="text-xs text-appleMuted">Já possui registro? <a href="javascript:void(0)" onclick="alternarAuth('login')" class="text-slate-900 font-semibold underline hover:text-appleAccent transition">Fazer Login</a></p>
+                    </div>
                 </form>
             </div>
         </div>
 
-        <div id="aba-geral" class="hidden animate-fade-in space-y-8">
+        <div id="aba-geral" class="hidden transition-all duration-300 space-y-8">
             
-            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-cardbg p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Saldo Disponível</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800 mt-1" id="saldo-total">R$ 0,00</h3>
-                    <span class="text-[10px] text-slate-400 font-medium block mt-1">Consolidado geral nas contas</span>
+            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-appleCard p-6 rounded-2xl border border-slate-200/60 shadow-apple-sm">
+                    <p class="text-[11px] font-semibold text-appleMuted uppercase tracking-wider">Patrimônio Líquido</p>
+                    <h3 class="text-2xl font-bold text-slate-900 mt-1.5 tracking-tight" id="saldo-total">R$ 0,00</h3>
+                    <span class="text-[11px] text-appleMuted font-normal block mt-1">Consolidado em todas as contas</span>
                 </div>
-                <div class="bg-cardbg p-5 rounded-2xl border border-slate-100 shadow-sm">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Receitas do Mês</p>
-                    <h3 class="text-2xl font-extrabold text-emerald-600 mt-1" id="total-receitas">R$ 0,00</h3>
-                    <span class="text-[10px] text-emerald-500 font-medium block mt-1"><i class="fas fa-level-up-alt mr-1"></i>Entradas no período visível</span>
+                <div class="bg-appleCard p-6 rounded-2xl border border-slate-200/60 shadow-apple-sm">
+                    <p class="text-[11px] font-semibold text-appleMuted uppercase tracking-wider">Receitas do Mês</p>
+                    <h3 class="text-2xl font-bold text-emerald-600 mt-1.5 tracking-tight" id="total-receitas">R$ 0,00</h3>
+                    <span class="text-[11px] text-emerald-600/80 font-normal block mt-1">Entradas contabilizadas</span>
                 </div>
-                <div class="bg-cardbg p-5 rounded-2xl border border-slate-100 shadow-sm">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Despesas do Mês</p>
-                    <h3 class="text-2xl font-extrabold text-rose-600 mt-1" id="total-despesas">R$ 0,00</h3>
-                    <span class="text-[10px] text-rose-400 font-medium block mt-1"><i class="fas fa-level-down-alt mr-1"></i>Saídas no período visível</span>
+                <div class="bg-appleCard p-6 rounded-2xl border border-slate-200/60 shadow-apple-sm">
+                    <p class="text-[11px] font-semibold text-appleMuted uppercase tracking-wider">Despesas do Mês</p>
+                    <h3 class="text-2xl font-bold text-rose-600 mt-1.5 tracking-tight" id="total-despesas">R$ 0,00</h3>
+                    <span class="text-[11px] text-rose-600/80 font-normal block mt-1">Saídas e consumo geral</span>
                 </div>
-                <div class="bg-cardbg p-5 rounded-2xl border border-slate-100 shadow-sm">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Economia Líquida</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800 mt-1" id="balanco-periodo">R$ 0,00</h3>
-                    <span class="text-[10px] text-slate-400 font-medium block mt-1">Sobra gerada neste mês</span>
+                <div class="bg-appleCard p-6 rounded-2xl border border-slate-200/60 shadow-apple-sm">
+                    <p class="text-[11px] font-semibold text-appleMuted uppercase tracking-wider">Economia Líquida</p>
+                    <h3 class="text-2xl font-bold text-slate-900 mt-1.5 tracking-tight" id="balanco-periodo">R$ 0,00</h3>
+                    <span class="text-[11px] text-appleMuted font-normal block mt-1">Resultado líquido gerado</span>
                 </div>
             </section>
 
-            <section class="bg-cardbg p-5 rounded-2xl border border-slate-100 shadow-sm">
-                <p class="text-xs font-bold text-slate-400 uppercase mb-3"><i class="fas fa-landmark text-indigo-500 mr-1.5"></i> Posição por Conta / Instituição</p>
-                <div class="flex overflow-x-auto gap-3 pb-2 no-scrollbar" id="lista-bancos"></div>
+            <section class="bg-appleCard p-6 rounded-2xl border border-slate-200/60 shadow-apple-sm">
+                <p class="text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-3.5 pl-1"><i class="fas fa-building text-slate-400 mr-2"></i> Posição por Instituição</p>
+                <div class="flex overflow-x-auto gap-3.5 pb-2 no-scrollbar" id="lista-bancos"></div>
             </section>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-cardbg p-6 rounded-2xl border border-slate-100 shadow-sm lg:col-span-2">
-                    <div class="flex justify-between items-center mb-4">
-                        <h4 class="text-sm font-bold text-slate-800 uppercase"><i class="fas fa-plus text-emerald-500 mr-1.5"></i> Lançar Transação</h4>
-                        <div class="bg-slate-100 p-1 rounded-xl flex gap-1">
-                            <button type="button" onclick="mudarTipoMovimento('despesa')" id="btn-tipo-despesa" class="px-3 py-1 rounded-lg text-xs font-bold bg-white text-rose-600 shadow-sm">Despesa</button>
-                            <button type="button" onclick="mudarTipoMovimento('receita')" id="btn-tipo-receita" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-400">Receita</button>
+                <div class="bg-appleCard p-6 sm:p-8 rounded-2xl border border-slate-200/60 shadow-apple-sm lg:col-span-2">
+                    <div class="flex justify-between items-center mb-6">
+                        <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Novo Movimento</h4>
+                        <div class="bg-appleBg p-1 rounded-xl flex gap-1 border border-slate-200/40">
+                            <button type="button" onclick="mudarTipoMovimento('despesa')" id="btn-tipo-despesa" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-apple-sm transition duration-200">Despesa</button>
+                            <button type="button" onclick="mudarTipoMovimento('receita')" id="btn-tipo-receita" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-appleMuted hover:text-slate-900 transition duration-200">Receita</button>
                         </div>
                     </div>
                     
                     <form onsubmit="adicionarTransacao(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <input type="hidden" id="tipo-movimento" value="despesa">
                         <div class="sm:col-span-2">
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Descrição</label>
-                            <input type="text" id="desc" required placeholder="Ex: Aluguel, Supermercado, Salário" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                            <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">Descrição</label>
+                            <input type="text" id="desc" required placeholder="Ex: Conta de Luz, Honorários, Compra Mensal" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition duration-200">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Valor (R$)</label>
-                            <input type="number" step="0.01" id="valor" required placeholder="0.00" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                            <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">Valor (R$)</label>
+                            <input type="number" step="0.01" id="valor" required placeholder="0.00" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition duration-200">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Categoria</label>
-                            <select id="categoria" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                            <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">Categoria</label>
+                            <select id="categoria" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition duration-200">
                                 <option value="Alimentação">Alimentação</option>
                                 <option value="Moradia">Moradia</option>
                                 <option value="Transporte">Transporte</option>
@@ -219,117 +255,123 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Conta de Saída/Entrada</label>
-                            <select id="banco" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium"></select>
+                            <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">Instituição / Conta</label>
+                            <select id="banco" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition duration-200"></select>
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Data</label>
-                            <input type="date" id="data-input" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                            <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">Data Referência</label>
+                            <input type="date" id="data-input" required class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition duration-200 text-slate-700">
                         </div>
-                        <div class="sm:col-span-2 mt-2">
-                            <button type="submit" id="btn-submit-transacao" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl text-sm transition shadow-md">Registrar Despesa</button>
+                        <div class="sm:col-span-2 mt-3">
+                            <button type="submit" id="btn-submit-transacao" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 rounded-xl text-sm transition duration-200 shadow-sm pt-3.5">
+                                Registrar Lançamento
+                            </button>
                         </div>
                     </form>
                 </div>
 
-                <div class="bg-cardbg p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-between">
-                    <p class="text-xs font-bold text-slate-400 uppercase self-start"><i class="fas fa-chart-pie text-indigo-500 mr-1.5"></i> Distribuição Mensal</p>
-                    <div class="w-full max-w-[180px] my-4"><canvas id="graficoDespesas"></canvas></div>
-                    <span class="text-[10px] text-slate-400 font-medium">Categorias das despesas do mês</span>
+                <div class="bg-appleCard p-6 sm:p-8 rounded-2xl border border-slate-200/60 shadow-apple-sm flex flex-col items-center justify-between">
+                    <p class="text-[11px] font-semibold text-appleMuted uppercase tracking-wider self-start pl-1">Consumo por Categoria</p>
+                    <div class="w-full max-w-[190px] my-6"><canvas id="graficoDespesas"></canvas></div>
+                    <span class="text-[11px] text-appleMuted font-normal text-center">Reflete os gastos do mês visualizado</span>
                 </div>
             </div>
 
-            <div class="bg-cardbg rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                    <h4 class="text-xs font-bold text-slate-500 uppercase">Movimentações do Período</h4>
+            <div class="bg-appleCard rounded-2xl border border-slate-200/60 shadow-apple-sm overflow-hidden">
+                <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wide">Extrato de Lançamentos</h4>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
-                        <tbody id="tabela-transacoes" class="divide-y divide-slate-100 font-medium"></tbody>
+                        <tbody id="tabela-transacoes" class="divide-y divide-slate-100/80"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <div id="aba-investimentos" class="hidden animate-fade-in space-y-8">
+        <div id="aba-investimentos" class="hidden transition-all duration-300 space-y-8">
             
-            <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="bg-cardbg p-5 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-indigo-600">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Patrimônio Investido</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800 mt-1" id="inv-total-custo">R$ 0,00</h3>
-                    <span class="text-[10px] text-slate-400 font-medium">Total de aportes realizados</span>
+            <section class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div class="bg-appleCard p-6 rounded-2xl border border-slate-200/60 shadow-apple-sm">
+                    <p class="text-[11px] font-semibold text-appleMuted uppercase tracking-wider">Capital Investido</p>
+                    <h3 class="text-2xl font-bold text-slate-900 mt-1.5 tracking-tight" id="inv-total-custo">R$ 0,00</h3>
+                    <span class="text-[11px] text-appleMuted font-normal block mt-1">Soma de todos os aportes</span>
                 </div>
-                <div class="bg-cardbg p-5 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-emerald-500">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Saldo Bruto Atual</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800 mt-1" id="inv-total-atual">R$ 0,00</h3>
-                    <span class="text-[10px] text-emerald-500 font-medium">Cotação de mercado acumulada</span>
+                <div class="bg-appleCard p-6 rounded-2xl border border-slate-200/60 shadow-apple-sm">
+                    <p class="text-[11px] font-semibold text-appleMuted uppercase tracking-wider">Saldo Bruto Estimado</p>
+                    <h3 class="text-2xl font-bold text-slate-900 mt-1.5 tracking-tight" id="inv-total-atual">R$ 0,00</h3>
+                    <span class="text-[11px] text-appleMuted font-normal block mt-1">Cotação a valor de mercado</span>
                 </div>
-                <div class="bg-cardbg p-5 rounded-2xl border border-slate-100 shadow-sm border-l-4 border-slate-800" id="card-lucro-borda">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Rentabilidade Global</p>
-                    <div class="flex items-baseline gap-2 mt-1">
-                        <h3 class="text-2xl font-extrabold" id="inv-rentabilidade-valor">R$ 0,00</h3>
-                        <span class="text-xs font-bold px-2 py-0.5 rounded-md" id="inv-rentabilidade-pct">0.00%</span>
+                <div class="bg-appleCard p-6 rounded-2xl border border-slate-200/60 shadow-apple-sm transition duration-300" id="card-lucro-borda">
+                    <p class="text-[11px] font-semibold text-appleMuted uppercase tracking-wider">Performance Global</p>
+                    <div class="flex items-baseline gap-2 mt-1.5">
+                        <h3 class="text-2xl font-bold tracking-tight" id="inv-rentabilidade-valor">R$ 0,00</h3>
+                        <span class="text-xs font-semibold px-2 py-0.5 rounded-md" id="inv-rentabilidade-pct">0.00%</span>
                     </div>
-                    <span class="text-[10px] text-slate-400 font-medium">Lucro/Prejuízo da carteira</span>
+                    <span class="text-[11px] text-appleMuted font-normal block mt-1">Rentabilidade do portfólio</span>
                 </div>
             </section>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-cardbg p-6 rounded-2xl border border-slate-100 shadow-sm lg:col-span-2">
-                    <h4 class="text-sm font-bold text-slate-800 uppercase mb-4"><i class="fas fa-plus text-indigo-600 mr-1.5"></i> Registrar Posição de Ativo</h4>
+                <div class="bg-appleCard p-6 sm:p-8 rounded-2xl border border-slate-200/60 shadow-apple-sm lg:col-span-2">
+                    <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wide mb-6">Atualizar Posição de Ativo</h4>
                     
                     <form onsubmit="adicionarInvestimento(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Classe</label>
-                            <select id="inv-tipo" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                            <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">Classe</label>
+                            <select id="inv-tipo" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition">
                                 <option value="Ações">Ações (B3)</option>
-                                <option value="FIIs">Fundos Imob. (FIIs)</option>
-                                <option value="Cripto">Criptomoedas</option>
+                                <option value="FIIs">Fundos Imobiliários</option>
+                                <option value="Cripto">Criptoativos</option>
                                 <option value="Renda Fixa">Renda Fixa</option>
                                 <option value="Internacional">Internacional</option>
                             </select>
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Ativo ou Ticker (Ex: BTC, PETR4)</label>
-                            <input type="text" id="inv-nome" required placeholder="Código do ativo" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                            <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">Código (Ex: AAPL34, BOVA11)</label>
+                            <input type="text" id="inv-nome" required placeholder="Identificador ou Ticker" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Quantidade</label>
-                            <input type="number" step="any" id="inv-qtd" required placeholder="Ex: 100" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                            <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">Quantidade</label>
+                            <input type="number" step="any" id="inv-qtd" required placeholder="Volumes alocados" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Preço Médio (R$)</label>
-                            <input type="number" step="0.01" id="inv-custo" required placeholder="Custo de compra" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                            <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">Preço Médio (R$)</label>
+                            <input type="number" step="0.01" id="inv-custo" required placeholder="Custo unitário" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase mb-1">Preço Atual (R$)</label>
-                            <input type="number" step="0.01" id="inv-atual" required placeholder="Cotação hoje" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                            <label class="block text-[11px] font-semibold text-appleMuted uppercase tracking-wider mb-1.5 pl-0.5">Cotação Atual (R$)</label>
+                            <input type="number" step="0.01" id="inv-atual" required placeholder="Preço na bolsa hoje" class="w-full p-3 bg-appleBg/50 border border-slate-200/80 rounded-xl text-sm focus:outline-none focus:border-slate-900 focus:bg-white transition">
                         </div>
-                        <div class="sm:col-span-3 mt-2">
-                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-sm transition shadow-md">Adicionar à Carteira</button>
+                        <div class="sm:col-span-3 mt-3">
+                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 rounded-xl text-sm transition duration-200 shadow-sm pt-3.5">
+                                Consolidar Ativo
+                            </button>
                         </div>
                     </form>
                 </div>
 
-                <div class="bg-cardbg p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-between">
-                    <p class="text-xs font-bold text-slate-400 uppercase self-start"><i class="fas fa-chart-pie text-brand mr-1.5"></i> Divisão por Classe</p>
-                    <div class="w-full max-w-[180px] my-4"><canvas id="graficoAlocacao"></canvas></div>
-                    <span class="text-[10px] text-slate-400 font-medium">Alocação do patrimônio atual</span>
+                <div class="bg-appleCard p-6 sm:p-8 rounded-2xl border border-slate-200/60 shadow-apple-sm flex flex-col items-center justify-between">
+                    <p class="text-[11px] font-semibold text-appleMuted uppercase tracking-wider self-start pl-1">Alocação de Risco</p>
+                    <div class="w-full max-w-[190px] my-6"><canvas id="graficoAlocacao"></canvas></div>
+                    <span class="text-[11px] text-appleMuted font-normal text-center">Concentração patrimonial bruta</span>
                 </div>
             </div>
 
-            <div class="bg-cardbg rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                <div class="p-4 bg-slate-50 border-b border-slate-100"><h4 class="text-xs font-bold text-slate-500 uppercase">Posição Consolidada</h4></div>
+            <div class="bg-appleCard rounded-2xl border border-slate-200/60 shadow-apple-sm overflow-hidden">
+                <div class="p-5 border-b border-slate-100 bg-slate-50/50">
+                    <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wide">Posição de Ativos</h4>
+                </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs md:text-sm">
+                    <table class="w-full text-left text-xs sm:text-sm">
                         <thead>
-                            <tr class="bg-slate-100/50 text-slate-400 text-[10px] uppercase font-bold border-b border-slate-100">
+                            <tr class="bg-white text-appleMuted text-[10px] uppercase font-semibold border-b border-slate-100">
                                 <th class="p-4">Ativo</th><th class="p-4">Classe</th><th class="p-4 text-center">Qtd</th>
                                 <th class="p-4 text-right">P. Médio</th><th class="p-4 text-right">P. Atual</th>
-                                <th class="p-4 text-right">Total Atual</th><th class="p-4 text-right">Rentabilidade</th><th class="p-4 text-center">Ação</th>
+                                <th class="p-4 text-right">Total Bruto</th><th class="p-4 text-right">Rentabilidade</th><th class="p-4 text-center">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="tabela-investimentos" class="divide-y divide-slate-100 font-medium"></tbody>
+                        <tbody id="tabela-investimentos" class="divide-y divide-slate-100/80"></tbody>
                     </table>
                 </div>
             </div>
@@ -339,7 +381,7 @@
     </main>
 
     <script>
-        // CREDENCIAIS NUVEM
+        // 1. CREDENCIAIS NUVEM METRIA
         const firebaseConfig = {
             apiKey: "AIzaSyAaAaFP6gC4nOuj4R1c4HZhPZo5ffHqUI4",
             authDomain: "financasapp-5de18.firebaseapp.com",
@@ -353,20 +395,21 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Variáveis de Estado
+        // Variáveis de Estado Mestre
         let usuarioAtual = null;
         let abaAtiva = 'geral';
         let sidebarExpandida = true;
-        let dataFiltroBase = new Date(); // Controla o mês/ano que o usuário está visualizando
+        let dataFiltroBase = new Date();
         
         let transacoes = [];
         let investimentos = [];
         let graficoDespesasCtx = null;
         let graficoAlocacaoCtx = null;
 
+        // Lista Estratégica Premium de Instituições
         const bancosCadastrados = [
-            'Nubank', 'Itaú', 'Bradesco', 'Santander', 'Banco do Brasil', 
-            'Inter', 'BTG Pactual', 'XP Investimentos', 'C6 Bank', 
+            'Nubank', 'Itaú Unibanco', 'Bradesco', 'Santander', 'Banco do Brasil', 
+            'Banco Inter', 'BTG Pactual', 'XP Investimentos', 'C6 Bank', 
             'PicPay', 'Mercado Pago', 'Caixa Econômica', 'Carteira Físico'
         ];
 
@@ -377,7 +420,7 @@
         });
 
 
-        // ================= FUNÇÕES DO NOVO COLLAPSIBLE DRAWER =================
+        // ================= CONTROLE DA DRAWER LATERAL =================
         
         function toggleSidebar() {
             sidebarExpandida = !sidebarExpandida;
@@ -386,45 +429,40 @@
             const textos = document.querySelectorAll('.sidebar-text');
 
             if(sidebarExpandida) {
-                aside.style.width = '16rem'; // 64 x 4px = 256px
+                aside.style.width = '16rem'; // Expandido
                 icon.className = "fas fa-chevron-left text-xs";
-                // Mostra textos após animação
-                setTimeout(() => textos.forEach(t => t.style.display = ''), 150);
+                setTimeout(() => textos.forEach(t => t.style.display = ''), 180);
             } else {
-                aside.style.width = '5rem'; // 20 x 4px = 80px (Espaço apenas para icones)
+                aside.style.width = '5.2rem'; // Minimizado (Ícones centralizados)
                 icon.className = "fas fa-chevron-right text-xs";
                 textos.forEach(t => t.style.display = 'none');
             }
         }
 
 
-        // ================= CONTROLE DE NAVEGAÇÃO DE MESES =================
+        // ================= NAVEGAÇÃO TEMPORAL CHIC =================
         
         const nomesMeses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
         function navegarMes(direcao) {
-            // direcao: -1 (recolher mês) ou +1 (avançar mês)
             dataFiltroBase.setMonth(dataFiltroBase.getMonth() + direcao);
-            
             const mesNum = dataFiltroBase.getMonth();
             const anoNum = dataFiltroBase.getFullYear();
             
-            // Atualiza Label Visual
             document.getElementById('lbl-mes-atual').innerText = `${nomesMeses[mesNum]} ${anoNum}`;
             
-            // Checa se é o mês atual de hoje para feedback
             const hoje = new Date();
             const isMesAtual = hoje.getMonth() === mesNum && hoje.getFullYear() === anoNum;
             const elStatus = document.getElementById('lbl-status-mes');
             
-            if(isMesAtual) { elStatus.innerText = "Mês Atual"; elStatus.className = "text-[9px] text-emerald-600 font-bold block mt-0.5"; }
-            else { elStatus.innerText = "Histórico"; elStatus.className = "text-[9px] text-slate-400 font-bold block mt-0.5"; }
+            if(isMesAtual) { elStatus.innerText = "Mês Atual"; elStatus.className = "text-[9px] text-appleAccent font-semibold block leading-none mt-0.5 tracking-wider uppercase"; }
+            else { elStatus.innerText = "Histórico Concluído"; elStatus.className = "text-[9px] text-appleMuted font-semibold block leading-none mt-0.5 tracking-wider uppercase"; }
 
             atualizarInterfaceGeral();
         }
 
 
-        // ================= ROTAS DE ABAS E AUTH =================
+        // ================= ROTAS DE ACESSO E INTERAÇÃO =================
         
         function alternarAuth(t) {
             document.getElementById('erro-login').classList.add('hidden'); document.getElementById('erro-cad').classList.add('hidden');
@@ -443,56 +481,53 @@
 
             if(a === 'geral') {
                 elInv.classList.add('hidden'); elGeral.classList.remove('hidden'); ctrlMes.classList.remove('hidden');
-                tit.innerText = "Fluxo de Caixa"; subt.innerText = "Gestão de receitas e despesas";
+                tit.innerText = "Fluxo de Caixa"; subt.innerText = "Patrimônio sob controle absoluto";
                 
-                bGDesk.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 text-white shadow-sm transition overflow-hidden";
-                bIDesk.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition overflow-hidden";
-                bGMob.className = "flex flex-col items-center gap-1 text-emerald-400 p-2"; bIMob.className = "flex flex-col items-center gap-1 text-slate-500 hover:text-slate-300 p-2";
+                bGDesk.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-slate-900 text-white shadow-sm transition duration-200 overflow-hidden group";
+                bIDesk.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-appleMuted hover:text-slate-900 hover:bg-slate-100/80 transition duration-200 overflow-hidden group";
+                bGMob.className = "flex flex-col items-center gap-1 text-slate-900 p-2"; bIMob.className = "flex flex-col items-center gap-1 text-appleMuted hover:text-slate-900 p-2 transition";
                 atualizarInterfaceGeral();
             } else {
                 elGeral.classList.add('hidden'); elInv.classList.remove('hidden'); ctrlMes.classList.add('hidden');
-                tit.innerText = "Investimentos"; subt.innerText = "Consolidação de patrimônio alocado";
+                tit.innerText = "Investimentos"; subt.innerText = "Consolidação de risco e performance";
                 
-                bIDesk.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm transition overflow-hidden";
-                bGDesk.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition overflow-hidden";
-                bIMob.className = "flex flex-col items-center gap-1 text-indigo-400 p-2"; bGMob.className = "flex flex-col items-center gap-1 text-slate-500 hover:text-slate-300 p-2";
+                bIDesk.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-slate-900 text-white shadow-sm transition duration-200 overflow-hidden group";
+                bGDesk.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-appleMuted hover:text-slate-900 hover:bg-slate-100/80 transition duration-200 overflow-hidden group";
+                bIMob.className = "flex flex-col items-center gap-1 text-slate-900 p-2"; bGMob.className = "flex flex-col items-center gap-1 text-appleMuted hover:text-slate-900 p-2 transition";
                 atualizarInterfaceInvestimentos();
             }
         }
 
         function mudarTipoMovimento(t) {
-            const bDes = document.getElementById('btn-tipo-despesa'); const bRec = document.getElementById('btn-tipo-receita'); const bAc = document.getElementById('btn-submit-transacao');
+            const bDes = document.getElementById('btn-tipo-despesa'); const bRec = document.getElementById('btn-tipo-receita');
             document.getElementById('tipo-movimento').value = t;
             if(t === 'despesa') {
-                bDes.className = "px-3 py-1 rounded-lg text-xs font-bold bg-white text-rose-600 shadow-sm"; bRec.className = "px-3 py-1 rounded-lg text-xs font-bold text-slate-400";
-                bAc.className = "w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl text-sm transition shadow-md"; bAc.innerText = "Registrar Despesa";
+                bDes.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-apple-sm transition duration-200"; bRec.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold text-appleMuted hover:text-slate-900 transition duration-200";
             } else {
-                bRec.className = "px-3 py-1 rounded-lg text-xs font-bold bg-white text-emerald-600 shadow-sm"; bDes.className = "px-3 py-1 rounded-lg text-xs font-bold text-slate-400";
-                bAc.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl text-sm transition shadow-md"; bAc.innerText = "Adicionar Receita";
+                bRec.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-slate-900 shadow-apple-sm transition duration-200"; bDes.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold text-appleMuted hover:text-slate-900 transition duration-200";
             }
         }
 
-        // ================= CONEXÃO DE AUTH E FIRESTORE =================
+
+        // ================= PROCESSADORES FIREBASE =================
         
         function validarSenha() {
             const s1 = document.getElementById('cad-senha').value; const s2 = document.getElementById('cad-senha-conf').value;
             const btn = document.getElementById('btn-submit-cad'); const err = document.getElementById('erro-cad');
             if(s1.length >= 6 && s1 === s2) { btn.disabled = false; err.classList.add('hidden'); } 
-            else if(s2.length > 0 && s1 !== s2) { btn.disabled = true; err.innerText = "Senhas não coincidem."; err.classList.remove('hidden'); }
+            else if(s2.length > 0 && s1 !== s2) { btn.disabled = true; err.innerText = "Combinações divergem."; err.classList.remove('hidden'); }
             else { btn.disabled = true; }
         }
 
-        function processarLogin(e) { e.preventDefault(); auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-senha').value).catch(() => { const err = document.getElementById('erro-login'); err.innerText = "Dados incorretos."; err.classList.remove('hidden'); }); }
-        function processarCadastro(e) { e.preventDefault(); const nome = document.getElementById('cad-nome').value.trim(); auth.createUserWithEmailAndPassword(document.getElementById('cad-email').value, document.getElementById('cad-senha').value).then(res => res.user.updateProfile({ displayName: nome })).catch(err => { const el = document.getElementById('erro-cad'); el.innerText = err.code === 'auth/email-already-in-use' ? "E-mail em uso." : "Falha na rede."; el.classList.remove('hidden'); }); }
+        function processarLogin(e) { e.preventDefault(); auth.signInWithEmailAndPassword(document.getElementById('login-email').value, document.getElementById('login-senha').value).catch(() => { const err = document.getElementById('erro-login'); err.innerText = "Acesso recusado. Credenciais incorretas."; err.classList.remove('hidden'); }); }
+        function processarCadastro(e) { e.preventDefault(); const nome = document.getElementById('cad-nome').value.trim(); auth.createUserWithEmailAndPassword(document.getElementById('cad-email').value, document.getElementById('cad-senha').value).then(res => res.user.updateProfile({ displayName: nome })).catch(err => { const el = document.getElementById('erro-cad'); el.innerText = err.code === 'auth/email-already-in-use' ? "Registro existente para este e-mail." : "Instabilidade temporária na rede."; el.classList.remove('hidden'); }); }
         function fazerLogout() { auth.signOut(); }
 
         auth.onAuthStateChanged(user => {
             const containerAuth = document.getElementById('auth-container'); const elementosRestritos = document.querySelectorAll('.hidden-auth');
             if(user) {
                 usuarioAtual = user; containerAuth.classList.add('hidden'); elementosRestritos.forEach(el => el.classList.remove('hidden'));
-                document.getElementById('desk-user-name').innerText = user.displayName ? user.displayName.split(' ')[0] : 'Usuário';
-                
-                // Configura label do mês inicial
+                document.getElementById('desk-user-name').innerText = user.displayName ? user.displayName.split(' ')[0] : 'Sócio';
                 document.getElementById('lbl-mes-atual').innerText = `${nomesMeses[dataFiltroBase.getMonth()]} ${dataFiltroBase.getFullYear()}`;
                 
                 iniciarSincronizacaoNuvem(); mudarAba('geral');
@@ -530,13 +565,12 @@
         function deletarDoc(col, id) { db.collection(col).doc(id).delete(); }
 
 
-        // ================= COMPILADORES E RENDERIZADORES =================
+        // ================= RENDERIZADORES DO DESIGN SYSTEM =================
         
         function formatarMoeda(v) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v); }
         function formatarData(d) { return d ? d.split('-').reverse().slice(0,2).join('/') : '--'; }
 
         function atualizarInterfaceGeral() {
-            // Usa as variáveis mestres de navegação do mês
             const mesAlvo = String(dataFiltroBase.getMonth() + 1).padStart(2, '0');
             const anoAlvo = String(dataFiltroBase.getFullYear());
 
@@ -544,14 +578,12 @@
             let saldosBancos = {}; bancosCadastrados.forEach(b => saldosBancos[b] = 0);
             let dadosGrafico = {};
 
-            // O saldo total considera tudo que a pessoa tem na vida
             transacoes.forEach(t => {
                 const v = t.valor;
                 if(t.tipo === 'receita') { saldoGlobal += v; if(saldosBancos[t.banco] !== undefined) saldosBancos[t.banco] += v; }
                 else { saldoGlobal -= v; if(saldosBancos[t.banco] !== undefined) saldosBancos[t.banco] -= v; }
             });
 
-            // Isola as movimentações do Mês selecionado no topo
             const transacoesMes = transacoes.filter(t => {
                 if(!t.data) return false;
                 const p = t.data.split('-');
@@ -566,37 +598,40 @@
                 else { desMes += t.valor; dadosGrafico[t.categoria] = (dadosGrafico[t.categoria] || 0) + t.valor; }
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50/80 border-b border-slate-50 transition">
-                        <td class="p-3 pl-4 font-bold flex items-center gap-2">${isRec ? '<i class="fas fa-arrow-up text-emerald-500"></i>' : '<i class="fas fa-arrow-down text-rose-500"></i>'} ${t.desc}</td>
-                        <td class="p-3 hidden sm:table-cell"><span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-xs">${t.categoria}</span></td>
-                        <td class="p-3 text-xs text-slate-400 font-semibold">${t.banco}</td>
-                        <td class="p-3 text-xs text-slate-400 hidden sm:table-cell">${formatarData(t.data)}</td>
-                        <td class="p-3 text-right font-bold ${isRec ? 'text-emerald-600' : 'text-rose-600'}">${isRec ? '+' : '-'} ${formatarMoeda(t.valor)}</td>
-                        <td class="p-3 pr-4 text-right"><button onclick="deletarDoc('transacoes', '${t.id}')" class="text-slate-300 hover:text-rose-500 p-1"><i class="fas fa-trash-alt text-xs"></i></button></td>
+                    <tr class="hover:bg-slate-50/50 border-b border-slate-100/60 transition duration-150">
+                        <td class="p-3.5 pl-4 font-medium text-slate-900 flex items-center gap-2.5">
+                            <span class="w-1.5 h-1.5 rounded-full ${isRec ? 'bg-emerald-500' : 'bg-slate-300'} block shrink-0"></span>
+                            ${t.desc}
+                        </td>
+                        <td class="p-3.5 hidden sm:table-cell"><span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-xs font-normal border border-slate-200/40">${t.categoria}</span></td>
+                        <td class="p-3.5 text-xs text-appleMuted font-normal">${t.banco}</td>
+                        <td class="p-3.5 text-xs text-appleMuted hidden sm:table-cell">${formatarData(t.data)}</td>
+                        <td class="p-3.5 text-right font-medium text-slate-900">${isRec ? '+' : '-'} ${formatarMoeda(t.valor)}</td>
+                        <td class="p-3.5 pr-4 text-right"><button onclick="deletarDoc('transacoes', '${t.id}')" title="Remover" class="text-slate-300 hover:text-rose-600 p-1 rounded transition duration-150"><i class="fas fa-times text-xs"></i></button></td>
                     </tr>`;
             });
 
-            if(transacoesMes.length === 0) tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400">Nenhum registro lançado para este mês.</td></tr>`;
+            if(transacoesMes.length === 0) tbody.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-appleMuted text-xs">Sem históricos contábeis processados neste recorte temporal.</td></tr>`;
 
             document.getElementById('saldo-total').innerText = formatarMoeda(saldoGlobal);
             document.getElementById('total-receitas').innerText = formatarMoeda(recMes);
             document.getElementById('total-despesas').innerText = formatarMoeda(desMes);
             
             const bal = recMes - desMes;
-            const elBal = document.getElementById('balanco-periodo');
-            elBal.innerText = formatarMoeda(bal); elBal.className = `text-2xl font-extrabold mt-1 ${bal >= 0 ? 'text-slate-800' : 'text-rose-600'}`;
+            document.getElementById('balanco-periodo').innerText = formatarMoeda(bal);
 
             const carrossel = document.getElementById('lista-bancos'); carrossel.innerHTML = '';
             bancosCadastrados.forEach(b => {
                 const v = saldosBancos[b];
                 carrossel.innerHTML += `
-                    <div class="bg-slate-50 shrink-0 p-3 rounded-xl border border-slate-100 w-36 text-center shadow-xs">
-                        <p class="text-[11px] text-slate-400 font-bold truncate">${b}</p>
-                        <p class="text-xs font-bold mt-1 ${v >= 0 ? 'text-slate-700' : 'text-rose-600'}">${formatarMoeda(v)}</p>
+                    <div class="bg-white shrink-0 p-3.5 rounded-xl border border-slate-200/60 w-40 text-center shadow-apple-sm">
+                        <p class="text-[11px] text-appleMuted font-medium truncate tracking-tight">${b}</p>
+                        <p class="text-xs font-semibold mt-1 text-slate-900">${formatarMoeda(v)}</p>
                     </div>`;
             });
 
-            renderizarGrafico('graficoDespesas', graficoDespesasCtx, dadosGrafico, ['#f43f5e', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#64748b']);
+            // Paleta Premium de Tons Silenciosos Apple
+            renderizarGrafico('graficoDespesas', graficoDespesasCtx, dadosGrafico, ['#1d1d1f', '#86868b', '#0071e3', '#34c759', '#ff9f0a', '#af52de']);
         }
 
         function atualizarInterfaceInvestimentos() {
@@ -608,29 +643,29 @@
                 const rV = i.valorAtualBruto - i.valorCustoBruto; const rP = i.valorCustoBruto > 0 ? (rV / i.valorCustoBruto) * 100 : 0; const isP = rV >= 0;
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50/80 border-b border-slate-50 transition">
-                        <td class="p-3 font-extrabold text-slate-800">${i.nome}</td>
-                        <td class="p-3"><span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[11px] font-bold">${i.classe}</span></td>
-                        <td class="p-3 text-center text-xs font-bold text-slate-500">${i.quantidade}</td>
-                        <td class="p-3 text-right text-xs text-slate-400">${formatarMoeda(i.precoCusto)}</td>
-                        <td class="p-3 text-right text-xs font-bold text-slate-700">${formatarMoeda(i.precoAtual)}</td>
-                        <td class="p-3 text-right font-extrabold text-slate-800">${formatarMoeda(i.valorAtualBruto)}</td>
-                        <td class="p-3 text-right"><span class="px-2 py-1 rounded-md text-[11px] font-bold border ${isP ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-rose-50 text-rose-600 border-rose-200'}">${isP ? '+' : ''}${rP.toFixed(2)}%</span></td>
-                        <td class="p-3 text-center"><button onclick="deletarDoc('investimentos', '${i.id}')" class="text-slate-300 hover:text-rose-500 p-1"><i class="fas fa-trash-alt text-xs"></i></button></td>
+                    <tr class="hover:bg-slate-50/50 border-b border-slate-100/60 transition duration-150">
+                        <td class="p-3.5 font-bold text-slate-900">${i.nome}</td>
+                        <td class="p-3.5"><span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[11px] font-normal border border-slate-200/40">${i.classe}</span></td>
+                        <td class="p-3.5 text-center text-xs text-appleMuted font-normal">${i.quantidade}</td>
+                        <td class="p-3.5 text-right text-xs text-appleMuted">${formatarMoeda(i.precoCusto)}</td>
+                        <td class="p-3.5 text-right text-xs text-slate-900 font-medium">${formatarMoeda(i.precoAtual)}</td>
+                        <td class="p-3.5 text-right font-semibold text-slate-900">${formatarMoeda(i.valorAtualBruto)}</td>
+                        <td class="p-3.5 text-right"><span class="text-xs font-medium ${isP ? 'text-emerald-600' : 'text-slate-400'}">${isP ? '+' : ''}${rP.toFixed(2)}%</span></td>
+                        <td class="p-3.5 text-center"><button onclick="deletarDoc('investimentos', '${i.id}')" title="Remover" class="text-slate-300 hover:text-rose-600 p-1 rounded transition duration-150"><i class="fas fa-times text-xs"></i></button></td>
                     </tr>`;
             });
 
-            if(investimentos.length === 0) tbody.innerHTML = `<tr><td colspan="8" class="p-8 text-center text-slate-400">Nenhuma posição alocada.</td></tr>`;
+            if(investimentos.length === 0) tbody.innerHTML = `<tr><td colspan="8" class="p-10 text-center text-appleMuted text-xs">Portfólio de risco ainda não consolidado.</td></tr>`;
 
             document.getElementById('inv-total-custo').innerText = formatarMoeda(tC); document.getElementById('inv-total-atual').innerText = formatarMoeda(tA);
             const rG = tA - tC; const rGP = tC > 0 ? (rG / tC) * 100 : 0; const isRP = rG >= 0;
             
-            const eRV = document.getElementById('inv-rentabilidade-valor'); const eRP = document.getElementById('inv-rentabilidade-pct'); const cB = document.getElementById('card-lucro-borda');
-            eRV.innerText = formatarMoeda(rG); eRV.className = `text-2xl font-extrabold ${isRP ? 'text-emerald-600' : 'text-rose-600'}`;
-            eRP.innerText = `${isRP ? '+' : ''}${rGP.toFixed(2)}%`; eRP.className = `text-xs font-bold px-2 py-0.5 rounded-md ${isRP ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`;
-            cB.className = `bg-cardbg p-5 rounded-2xl border border-slate-100 shadow-sm border-l-4 ${isRP ? 'border-emerald-500' : 'border-rose-500'}`;
+            document.getElementById('inv-rentabilidade-valor').innerText = formatarMoeda(rG);
+            const eRP = document.getElementById('inv-rentabilidade-pct');
+            eRP.innerText = `${isRP ? '+' : ''}${rGP.toFixed(2)}%`;
+            eRP.className = `text-xs font-semibold px-2 py-0.5 rounded-md ${isRP ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-100 text-slate-600'}`;
 
-            renderizarGrafico('graficoAlocacao', graficoAlocacaoCtx, aloc, ['#4f46e5', '#059669', '#eab308', '#06b6d4', '#ec4899']);
+            renderizarGrafico('graficoAlocacao', graficoAlocacaoCtx, aloc, ['#0071e3', '#34c759', '#5856d6', '#ffcc00', '#ff3b30']);
         }
 
         function renderizarGrafico(id, ref, dados, cores) {
@@ -639,10 +674,10 @@
             if(id === 'graficoAlocacao' && graficoAlocacaoCtx) graficoAlocacaoCtx.destroy();
 
             if(l.length === 0) {
-                const cV = new Chart(ctx, { type: 'doughnut', data: { labels: ['Vazio'], datasets: [{ data: [1], backgroundColor: ['#f1f5f9'] }] }, options: { plugins: { legend: { display: false } }, cutout: '75%', animation: false } });
+                const cV = new Chart(ctx, { type: 'doughnut', data: { labels: ['Vazia'], datasets: [{ data: [1], backgroundColor: ['#eaeaea'] }] }, options: { plugins: { legend: { display: false } }, cutout: '80%', animation: false } });
                 if(id === 'graficoDespesas') graficoDespesasCtx = cV; else graficoAlocacaoCtx = cV; return;
             }
-            const nC = new Chart(ctx, { type: 'doughnut', data: { labels: l, datasets: [{ data: d, backgroundColor: cores, borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false } } } });
+            const nC = new Chart(ctx, { type: 'doughnut', data: { labels: l, datasets: [{ data: d, backgroundColor: cores, borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { display: false } } } });
             if(id === 'graficoDespesas') graficoDespesasCtx = nC; else graficoAlocacaoCtx = nC;
         }
     </script>
