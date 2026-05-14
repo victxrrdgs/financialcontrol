@@ -17,132 +17,157 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: { iosBlue: '#007AFF', metriaGold: '#D4AF37' }
+                    colors: { metriaNavy: '#0f172a', metriaGold: '#d4af37', iosBlue: '#007AFF' }
                 }
             }
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; background: #f5f5f7; overflow-x: hidden; }
         
-        /* Glassmorphism Core */
         .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
         
-        /* Animated Background Blobs */
-        .blob-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
-        .blob { position: absolute; width: 600px; height: 600px; border-radius: 50%; filter: blur(100px); opacity: 0.3; animation: float 20s infinite alternate; }
-        @keyframes float { from { transform: translate(-10%, -10%); } to { transform: translate(20%, 15%); } }
+        .blob-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: #f5f5f7; }
+        .blob { position: absolute; width: 700px; height: 700px; border-radius: 50%; filter: blur(120px); opacity: 0.25; animation: float 25s infinite alternate; }
+        @keyframes float { from { transform: translate(-10%, -10%); } to { transform: translate(15%, 15%); } }
 
-        .sidebar-active { background: rgba(0, 0, 0, 0.05); color: #000; font-weight: 700; }
-        .card-apple { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .card-apple:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+        .active-tab { background: rgba(0, 0, 0, 0.06); color: #000; font-weight: 700; border-left: 4px solid #000; }
+        input:focus { outline: none; border-color: #000; }
     </style>
 </head>
 <body class="flex min-h-screen text-slate-900">
 
-    <div class="blob-container">
-        <div class="blob" style="top: -100px; left: -100px; background: #c7d2fe;"></div>
-        <div class="blob" style="bottom: -100px; right: -100px; background: #fae8ff;"></div>
+    <div class="blob-bg">
+        <div class="blob" style="top: -100px; left: -100px; background: #007AFF;"></div>
+        <div class="blob" style="bottom: -100px; right: -100px; background: #fbbf24;"></div>
     </div>
 
-    <aside id="sidebar" class="w-64 glass m-4 mr-0 rounded-[2rem] hidden md:flex flex-col sticky top-4 h-[calc(100vh-2rem)] z-50">
+    <aside id="sidebar" class="w-72 glass m-4 mr-0 rounded-[2.5rem] hidden md:flex flex-col sticky top-4 h-[calc(100vh-2rem)] z-50 shadow-2xl">
         <div class="p-8">
-            <div class="flex items-center gap-3 mb-10 pl-2">
-                <div class="w-10 h-10 bg-black text-white rounded-2xl flex items-center justify-center font-bold shadow-2xl">M</div>
-                <h1 class="text-xl font-bold tracking-tight">Metria</h1>
+            <div class="flex items-center gap-3 mb-12">
+                <div class="w-10 h-10 bg-black text-metriaGold rounded-2xl flex items-center justify-center font-black shadow-xl italic">M</div>
+                <div>
+                    <h1 class="text-xl font-black tracking-tighter">METRIA</h1>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none">Intelligence</p>
+                </div>
             </div>
 
-            <nav class="space-y-2 hidden-auth">
-                <button onclick="mudarAba('geral')" id="btn-geral" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-500 hover:bg-white/50 transition-all sidebar-active">
-                    <i class="fas fa-grid-2 w-5"></i> Fluxo
+            <nav class="space-y-2" id="nav-main">
+                <button onclick="mudarAba('geral')" id="btn-geral" class="w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-medium text-slate-500 hover:bg-white/60 transition-all active-tab">
+                    <i class="fas fa-chart-pie-alt w-5"></i> Dashboard
                 </button>
-                <button onclick="mudarAba('investimentos')" id="btn-investimentos" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-500 hover:bg-white/50 transition-all">
-                    <i class="fas fa-chart-line w-5"></i> Carteira
+                <button onclick="mudarAba('investimentos')" id="btn-investimentos" class="w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-medium text-slate-500 hover:bg-white/60 transition-all">
+                    <i class="fas fa-vault w-5"></i> Ativos
                 </button>
-                <button onclick="mudarAba('perfil')" id="btn-perfil" class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-500 hover:bg-white/50 transition-all">
-                    <i class="fas fa-bullseye w-5"></i> Metas
+                <button onclick="mudarAba('perfil')" id="btn-perfil" class="w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-sm font-medium text-slate-500 hover:bg-white/60 transition-all">
+                    <i class="fas fa-user-circle w-5"></i> Planejamento
                 </button>
             </nav>
         </div>
 
-        <div class="mt-auto p-4 hidden-auth">
-            <div class="glass bg-white/40 p-3 rounded-2xl flex items-center gap-3 border-none shadow-sm">
-                <img id="user-photo" src="" class="w-9 h-9 rounded-full hidden border-2 border-white">
-                <div id="user-initial" class="w-9 h-9 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold">U</div>
-                <div class="overflow-hidden">
-                    <p id="desk-user-name" class="text-[10px] font-bold truncate"></p>
-                    <button onclick="fazerLogout()" class="text-[9px] text-iosBlue font-bold uppercase">Sair</button>
+        <div class="mt-auto p-6">
+            <div class="glass bg-white/40 p-4 rounded-[1.8rem] flex flex-col gap-3 shadow-sm border-white/60">
+                <div class="flex items-center gap-3">
+                    <img id="user-photo" src="" class="w-10 h-10 rounded-full hidden border-2 border-white shadow-md">
+                    <div id="user-initial" class="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">U</div>
+                    <div class="overflow-hidden">
+                        <p id="user-display-name" class="text-xs font-bold truncate">Visitante</p>
+                        <p id="user-display-email" class="text-[9px] text-slate-400 truncate">Sincronização Ativa</p>
+                    </div>
                 </div>
+                <button onclick="fazerLogout()" class="w-full py-2 bg-black/5 hover:bg-rose-500 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all">Sair do Sistema</button>
             </div>
         </div>
     </aside>
 
-    <main class="flex-1 p-4 md:p-10">
+    <main class="flex-1 p-6 md:p-12 overflow-y-auto">
         
-        <div id="auth-container" class="max-w-sm mx-auto mt-32 text-center animate-pulse">
-            <div class="glass p-10 rounded-[3rem] shadow-2xl">
-                <div class="w-16 h-16 bg-black text-white rounded-3xl flex items-center justify-center mx-auto mb-6 text-3xl font-bold">M</div>
-                <h2 class="text-2xl font-bold mb-8">Wealth Management</h2>
-                <button onclick="loginGoogle()" class="w-full flex items-center justify-center gap-3 bg-black text-white py-4 rounded-2xl font-semibold text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-xl">
-                    <i class="fab fa-google"></i> Acessar com Google
-                </button>
+        <div id="auth-container" class="max-w-4xl mx-auto mt-20 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="p-8">
+                <h2 class="text-5xl font-black tracking-tighter mb-4">O design da sua liberdade.</h2>
+                <p class="text-slate-500 text-lg">A Metria combina gestão de ativos de elite com a simplicidade da estética Apple.</p>
+            </div>
+
+            <div class="glass p-10 rounded-[3rem] shadow-2xl space-y-6">
+                <div class="flex bg-black/5 p-1.5 rounded-2xl gap-1">
+                    <button onclick="toggleAuthMode('login')" id="tab-login" class="flex-1 py-2.5 rounded-xl text-xs font-bold bg-white shadow-sm transition-all">Login</button>
+                    <button onclick="toggleAuthMode('cadastro')" id="tab-cad" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-400 transition-all">Criar Conta</button>
+                </div>
+
+                <div id="google-login-section">
+                    <button onclick="loginGoogle()" class="w-full flex items-center justify-center gap-3 bg-white border border-slate-200 py-4 rounded-2xl font-bold text-sm hover:bg-slate-50 transition-all shadow-sm">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" class="w-5 h-5">
+                        <span id="google-btn-text">Entrar com Google</span>
+                    </button>
+                    <div class="relative flex items-center justify-center my-6 opacity-20"><div class="border-t border-black w-full"></div><span class="absolute bg-white px-4 text-[10px] font-black uppercase tracking-widest">ou</span></div>
+                </div>
+
+                <form id="form-login" onsubmit="processarAuth(event)" class="space-y-4">
+                    <input type="email" id="auth-email" required placeholder="Seu e-mail" class="w-full p-4 bg-white/50 rounded-2xl text-sm border-none ring-1 ring-black/5 focus:ring-black/20 transition-all">
+                    <input type="password" id="auth-senha" required placeholder="Senha" class="w-full p-4 bg-white/50 rounded-2xl text-sm border-none ring-1 ring-black/5 focus:ring-black/20 transition-all">
+                    <p id="auth-erro" class="text-xs text-rose-600 font-bold text-center hidden"></p>
+                    <button type="submit" id="btn-auth-submit" class="w-full bg-black text-white py-4 rounded-2xl font-bold text-sm shadow-xl hover:scale-[1.01] active:scale-95 transition-all">Acessar Painel</button>
+                </form>
             </div>
         </div>
 
-        <div id="app-content" class="hidden-auth hidden space-y-8">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div id="app-content" class="hidden space-y-10 animate-in fade-in duration-700">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h2 id="main-title" class="text-4xl font-black tracking-tight text-slate-900">Dashboard</h2>
-                    <p id="main-subtitle" class="text-slate-500 text-sm mt-1">Visão holística do seu patrimônio.</p>
+                    <h2 id="page-title" class="text-5xl font-black tracking-tight text-slate-900">Dashboard</h2>
+                    <p id="page-subtitle" class="text-slate-400 font-semibold mt-2 uppercase text-[10px] tracking-[0.2em]">Visão Geral de Patrimônio</p>
                 </div>
-                <div class="flex items-center gap-2 glass p-2 rounded-2xl shadow-sm border-none">
-                    <button onclick="navegarMes(-1)" class="w-9 h-9 hover:bg-white rounded-xl transition-all"><i class="fas fa-chevron-left text-xs"></i></button>
-                    <span id="lbl-mes-atual" class="text-xs font-bold px-4 min-w-[140px] text-center capitalize">Maio 2026</span>
-                    <button onclick="navegarMes(1)" class="w-9 h-9 hover:bg-white rounded-xl transition-all"><i class="fas fa-chevron-right text-xs"></i></button>
+                <div class="flex items-center gap-3 glass p-2 rounded-[1.5rem] shadow-sm">
+                    <button onclick="navegarMes(-1)" class="w-10 h-10 hover:bg-white rounded-2xl transition-all"><i class="fas fa-chevron-left text-xs"></i></button>
+                    <span id="lbl-mes-atual" class="text-sm font-black px-6 min-w-[160px] text-center capitalize">Maio 2026</span>
+                    <button onclick="navegarMes(1)" class="w-10 h-10 hover:bg-white rounded-2xl transition-all"><i class="fas fa-chevron-right text-xs"></i></button>
                 </div>
             </div>
 
-            <div id="aba-geral" class="space-y-6">
+            <div id="aba-geral" class="space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="glass p-8 rounded-[2.5rem] card-apple">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Patrimônio Consolidado</p>
-                        <h3 id="saldo-total" class="text-3xl font-bold tracking-tighter">R$ 0,00</h3>
+                    <div class="glass p-8 rounded-[2.5rem] border-none shadow-apple">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Patrimônio Líquido</p>
+                        <h3 id="saldo-total" class="text-4xl font-bold tracking-tighter">R$ 0,00</h3>
                     </div>
-                    <div class="glass p-8 rounded-[2.5rem] card-apple">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Receitas (Mês)</p>
-                        <h3 id="total-receitas" class="text-3xl font-bold text-emerald-600 tracking-tighter">R$ 0,00</h3>
+                    <div class="glass p-8 rounded-[2.5rem] border-none">
+                        <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2">Entradas (Mês)</p>
+                        <h3 id="total-receitas" class="text-4xl font-bold text-emerald-600 tracking-tighter">R$ 0,00</h3>
                     </div>
-                    <div class="glass p-8 rounded-[2.5rem] card-apple">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Despesas (Mês)</p>
-                        <h3 id="total-despesas" class="text-3xl font-bold text-rose-600 tracking-tighter">R$ 0,00</h3>
+                    <div class="glass p-8 rounded-[2.5rem] border-none">
+                        <p class="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-2">Saídas (Mês)</p>
+                        <h3 id="total-despesas" class="text-4xl font-bold text-rose-600 tracking-tighter">R$ 0,00</h3>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 glass p-8 rounded-[2.5rem]">
-                        <h4 class="font-bold mb-6 text-sm opacity-50">NOVA TRANSAÇÃO</h4>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 glass p-10 rounded-[3rem]">
+                        <div class="flex justify-between items-center mb-8">
+                            <h4 class="font-black text-lg">Nova Operação</h4>
+                            <select id="tipo-mov" onchange="styleSelect(this)" class="bg-black text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest outline-none cursor-pointer">
+                                <option value="despesa">Saída (-)</option>
+                                <option value="receita">Entrada (+)</option>
+                            </select>
+                        </div>
                         <form onsubmit="adicionarTransacao(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" id="desc" required placeholder="Título" class="md:col-span-2 p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5 focus:bg-white focus:ring-black/20">
-                            <input type="number" step="0.01" id="valor" required placeholder="Valor R$" class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5 focus:bg-white">
-                            <select id="tipo-mov" class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
-                                <option value="despesa">Despesa</option><option value="receita">Receita</option>
+                            <input type="text" id="desc" required placeholder="Descrição" class="md:col-span-2 p-4 bg-white/50 rounded-2xl text-sm border-none ring-1 ring-black/5 focus:bg-white">
+                            <input type="number" step="0.01" id="valor" required placeholder="Valor R$" class="p-4 bg-white/50 rounded-2xl text-sm border-none ring-1 ring-black/5">
+                            <select id="cat" class="p-4 bg-white/50 rounded-2xl text-sm border-none ring-1 ring-black/5">
+                                <option>Alimentação</option><option>Moradia</option><option>Lazer</option><option>Transporte</option><option>Salário</option><option>Investimentos</option>
                             </select>
-                            <select id="cat" class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
-                                <option>Moradia</option><option>Alimentação</option><option>Transporte</option><option>Lazer</option><option>Renda</option>
-                            </select>
-                            <input type="date" id="data-mov" required class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
-                            <button class="md:col-span-2 bg-black text-white font-bold py-4 rounded-2xl hover:scale-[1.01] transition-all shadow-lg">Confirmar Lançamento</button>
+                            <input type="date" id="data-mov" required class="w-full p-4 bg-white/50 rounded-2xl text-sm border-none ring-1 ring-black/5">
+                            <button class="md:col-span-2 bg-black text-white font-black py-5 rounded-2xl hover:bg-slate-800 shadow-2xl transition-all">Sincronizar Lançamento</button>
                         </form>
                     </div>
-                    <div class="glass p-8 rounded-[2.5rem] flex flex-col items-center justify-center">
-                        <div class="w-full max-w-[200px]"><canvas id="chartGastos"></canvas></div>
-                        <p class="text-[10px] font-black text-slate-400 mt-6 tracking-widest uppercase">Gastos por Categoria</p>
+                    <div class="glass p-10 rounded-[3rem] flex flex-col items-center justify-center">
+                        <canvas id="chartGastos"></canvas>
+                        <p class="text-[10px] font-black text-slate-400 mt-8 tracking-[0.2em] uppercase">Alocação Mensal</p>
                     </div>
                 </div>
 
@@ -151,49 +176,57 @@
                 </div>
             </div>
 
-            <div id="aba-investimentos" class="hidden space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass p-8 rounded-[2.5rem]">
-                        <h4 class="font-bold mb-6 text-sm opacity-50">ADICIONAR ATIVO</h4>
+            <div id="aba-investimentos" class="hidden space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="glass p-10 rounded-[3rem]">
+                        <h4 class="font-black text-lg mb-8 uppercase tracking-tighter">Gerenciar Carteira</h4>
                         <form onsubmit="adicionarAtivo(event)" class="space-y-4">
-                            <input type="text" id="ativo-ticker" required placeholder="Ticker (ex: BTC, AAPL)" class="w-full p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5 uppercase">
+                            <input type="text" id="ativo-ticker" required placeholder="Ticker (Ex: BTC, PETR4)" class="w-full p-4 bg-white/50 rounded-2xl text-sm border-none ring-1 ring-black/5 uppercase font-bold">
                             <div class="grid grid-cols-2 gap-4">
-                                <input type="number" id="ativo-qtd" required placeholder="Qtd" class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
-                                <input type="number" step="0.01" id="ativo-preco" required placeholder="Preço" class="p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
+                                <input type="number" id="ativo-qtd" required placeholder="Qtd" class="p-4 bg-white/50 rounded-2xl text-sm border-none ring-1 ring-black/5">
+                                <input type="number" step="0.01" id="ativo-preco" required placeholder="Preço Médio" class="p-4 bg-white/50 rounded-2xl text-sm border-none ring-1 ring-black/5">
                             </div>
-                            <select id="ativo-tipo" class="w-full p-4 bg-white/40 rounded-2xl text-sm border-none ring-1 ring-black/5">
-                                <option>Ações</option><option>Cripto</option><option>FIIs</option><option>Renda Fixa</option>
+                            <select id="ativo-tipo" class="w-full p-4 bg-white/50 rounded-2xl text-sm border-none ring-1 ring-black/5 font-bold">
+                                <option>Ação (B3)</option><option>FII</option><option>Cripto</option><option>Internacional</option><option>Renda Fixa</option>
                             </select>
-                            <button class="w-full bg-black text-white font-bold py-4 rounded-2xl shadow-xl">Salvar na Carteira</button>
+                            <button class="w-full bg-black text-white font-black py-5 rounded-2xl shadow-xl hover:scale-[1.01] transition-all">Consolidar Ativo</button>
                         </form>
                     </div>
-                    <div class="glass p-8 rounded-[2.5rem] flex items-center justify-center">
-                        <div class="w-full max-w-[220px]"><canvas id="chartInvest"></canvas></div>
+                    <div class="glass p-10 rounded-[3rem] flex items-center justify-center">
+                        <canvas id="chartInvest" class="max-w-[240px]"></canvas>
                     </div>
                 </div>
-                <div class="glass rounded-[2.5rem] overflow-hidden">
+                <div class="glass rounded-[3rem] overflow-hidden">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-black/5 text-[10px] font-black uppercase text-slate-400"><tr class="border-b border-black/5"><th class="p-5">Ativo</th><th class="p-5">Tipo</th><th class="p-5">Qtd</th><th class="p-5 text-right">Total</th><th class="p-5"></th></tr></thead>
+                        <thead class="bg-black/5 text-[10px] font-black uppercase text-slate-400 tracking-[0.1em]">
+                            <tr class="border-b border-black/5">
+                                <th class="p-6">Ativo</th><th class="p-6">Classe</th><th class="p-6 text-center">Qtd</th><th class="p-6 text-right">Valor Total</th><th class="p-6"></th>
+                            </tr>
+                        </thead>
                         <tbody id="lista-ativos" class="divide-y divide-black/5"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="aba-perfil" class="hidden space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass p-8 rounded-[2.5rem]">
-                        <h4 class="font-bold mb-6 text-sm opacity-50">PERFIL FINANCEIRO</h4>
-                        <label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">Renda Mensal Sugerida (R$)</label>
-                        <input type="number" id="perfil-renda" class="w-full p-4 bg-white/40 rounded-2xl text-2xl font-bold mb-6 border-none ring-1 ring-black/5">
-                        <button onclick="salvarPerfil()" class="w-full bg-black text-white py-4 rounded-2xl font-bold">Atualizar Metrias</button>
+            <div id="aba-perfil" class="hidden space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="glass p-10 rounded-[3rem]">
+                        <h4 class="font-black text-lg mb-8 uppercase tracking-tighter">Dados de Perfil</h4>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Renda Mensal Alvo (R$)</label>
+                                <input type="number" id="perfil-renda" class="w-full p-5 bg-white/50 rounded-2xl text-3xl font-black border-none ring-1 ring-black/5">
+                            </div>
+                            <button onclick="salvarPerfil()" class="w-full bg-black text-metriaGold py-5 rounded-2xl font-black text-sm shadow-xl">Sincronizar Estratégia</button>
+                        </div>
                     </div>
-                    <div class="glass p-8 rounded-[2.5rem]">
-                        <h4 class="font-bold mb-6 text-sm opacity-50">OBJETIVOS PATRIMONIAIS</h4>
-                        <div id="container-metas" class="space-y-6"></div>
-                        <div class="mt-8 pt-8 border-t border-black/5 flex gap-2">
-                            <input type="text" id="meta-nome" placeholder="Meta" class="flex-1 p-3 bg-white/40 rounded-xl text-xs border-none ring-1 ring-black/5">
-                            <input type="number" id="meta-valor" placeholder="Alvo R$" class="w-24 p-3 bg-white/40 rounded-xl text-xs border-none ring-1 ring-black/5">
-                            <button onclick="adicionarMeta()" class="bg-black text-white px-4 rounded-xl text-xs"><i class="fas fa-plus"></i></button>
+                    <div class="glass p-10 rounded-[3rem]">
+                        <h4 class="font-black text-lg mb-8 uppercase tracking-tighter">Metas de Patrimônio</h4>
+                        <div id="container-metas" class="space-y-8"></div>
+                        <div class="mt-12 pt-8 border-t border-black/5 flex gap-2">
+                            <input type="text" id="meta-nome" placeholder="Título" class="flex-1 p-4 bg-white/50 rounded-2xl text-xs border-none ring-1 ring-black/5">
+                            <input type="number" id="meta-valor" placeholder="Alvo R$" class="w-32 p-4 bg-white/50 rounded-2xl text-xs border-none ring-1 ring-black/5">
+                            <button onclick="adicionarMeta()" class="bg-black text-white px-6 rounded-2xl"><i class="fas fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -202,7 +235,7 @@
     </main>
 
     <script>
-        // FIREBASE SETUP
+        // CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyAaAaFP6gC4nOuj4R1c4HZhPZo5ffHqUI4",
             authDomain: "financasapp-5de18.firebaseapp.com",
@@ -214,18 +247,40 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth(), db = firebase.firestore();
 
-        let user = null, transacoes = [], ativos = [], metas = [], perfil = {};
-        let dataFiltro = new Date(), chartGastos = null, chartInvest = null;
+        let user = null, transacoes = [], ativos = [], metas = [], isRegistering = false;
+        let dataFiltro = new Date(), chartG = null, chartI = null;
+
+        // AUTH LOGIC
+        function toggleAuthMode(mode) {
+            isRegistering = mode === 'cadastro';
+            document.getElementById('tab-login').className = isRegistering ? 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-400 transition-all' : 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white shadow-sm transition-all';
+            document.getElementById('tab-cad').className = !isRegistering ? 'flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-400 transition-all' : 'flex-1 py-2.5 rounded-xl text-xs font-bold bg-white shadow-sm transition-all';
+            document.getElementById('google-btn-text').innerText = isRegistering ? 'Cadastrar com Google' : 'Entrar com Google';
+            document.getElementById('btn-auth-submit').innerText = isRegistering ? 'Concluir Cadastro' : 'Acessar Painel';
+        }
 
         function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
-        function fazerLogout() { auth.signOut(); window.location.reload(); }
+        function fazerLogout() { auth.signOut().then(() => window.location.reload()); }
+
+        function processarAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-senha').value;
+            const errEl = document.getElementById('auth-erro');
+            errEl.classList.add('hidden');
+
+            const action = isRegistering ? auth.createUserWithEmailAndPassword(email, pass) : auth.signInWithEmailAndPassword(email, pass);
+            action.catch(err => { errEl.innerText = err.message; errEl.classList.remove('hidden'); });
+        }
 
         auth.onAuthStateChanged(u => {
             user = u;
             document.getElementById('auth-container').classList.toggle('hidden', !!u);
             document.getElementById('app-content').classList.toggle('hidden', !u);
+            document.getElementById('sidebar').classList.toggle('hidden', !u);
             if(u) {
-                document.getElementById('desk-user-name').innerText = u.displayName;
+                document.getElementById('user-display-name').innerText = u.displayName || u.email.split('@')[0];
+                document.getElementById('user-display-email').innerText = u.email;
                 if(u.photoURL) { 
                     const img = document.getElementById('user-photo');
                     img.src = u.photoURL; img.classList.remove('hidden');
@@ -235,16 +290,22 @@
             }
         });
 
+        // NAVEGAÇÃO
         function mudarAba(aba) {
             ['geral', 'investimentos', 'perfil'].forEach(a => {
                 document.getElementById(`aba-${a}`).classList.toggle('hidden', a !== aba);
-                document.getElementById(`btn-${a}`).classList.toggle('sidebar-active', a === aba);
+                document.getElementById(`btn-${a}`).classList.toggle('active-tab', a === aba);
             });
-            const titulos = { geral: ['Dashboard', 'Seu patrimônio consolidado.'], investimentos: ['Carteira', 'Ativos sob gestão.'], perfil: ['Objetivos', 'Seu planejamento estratégico.'] };
-            document.getElementById('main-title').innerText = titulos[aba][0];
-            document.getElementById('main-subtitle').innerText = titulos[aba][1];
+            const t = { geral: ['Dashboard', 'Patrimônio'], investimentos: ['Ativos', 'Carteira'], perfil: ['Objetivos', 'Estratégia'] };
+            document.getElementById('page-title').innerText = t[aba][0];
+            document.getElementById('page-subtitle').innerText = t[aba][1];
         }
 
+        function styleSelect(el) {
+            el.className = el.value === 'receita' ? 'bg-emerald-600 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase outline-none' : 'bg-black text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase outline-none';
+        }
+
+        // DATABASE SYNC
         function syncData() {
             db.collection("transacoes").where("uid", "==", user.uid).onSnapshot(s => {
                 transacoes = s.docs.map(d => ({id: d.id, ...d.data()}));
@@ -256,9 +317,9 @@
             });
             db.collection("perfil").doc(user.uid).onSnapshot(doc => {
                 if(doc.exists) {
-                    perfil = doc.data();
-                    document.getElementById('perfil-renda').value = perfil.renda || '';
-                    metas = perfil.metas || [];
+                    const data = doc.data();
+                    document.getElementById('perfil-renda').value = data.renda || '';
+                    metas = data.metas || [];
                     renderMetas();
                 }
             });
@@ -299,59 +360,60 @@
 
         function salvarPerfil() {
             const r = document.getElementById('perfil-renda').value;
-            db.collection("perfil").doc(user.uid).set({ renda: r }, { merge: true });
+            db.collection("perfil").doc(user.uid).set({ renda: r }, { merge: true }).then(() => alert("Sincronizado."));
         }
 
         function navegarMes(dir) { dataFiltro.setMonth(dataFiltro.getMonth() + dir); updateUI(); }
 
+        // RENDER CORE
         function updateUI() {
             const m = dataFiltro.getMonth(), y = dataFiltro.getFullYear();
             const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
             document.getElementById('lbl-mes-atual').innerText = `${meses[m]} ${y}`;
 
-            let patrimônio = 0, rec = 0, des = 0, catMap = {}, invMap = {};
+            let pat = 0, rec = 0, des = 0, catM = {}, invM = {};
 
-            const listaT = document.getElementById('lista-transacoes'); listaT.innerHTML = '';
+            const listT = document.getElementById('lista-transacoes'); listT.innerHTML = '';
             transacoes.forEach(t => {
-                if(t.tipo === 'receita') patrimônio += t.valor; else patrimônio -= t.valor;
+                if(t.tipo === 'receita') pat += t.valor; else pat -= t.valor;
                 const dt = t.data.split('-');
                 if(parseInt(dt[1]) === (m+1) && parseInt(dt[0]) === y) {
-                    if(t.tipo === 'receita') rec += t.valor; else { des += t.valor; catMap[t.cat] = (catMap[t.cat] || 0) + t.valor; }
-                    listaT.innerHTML += `<tr class="p-4 hover:bg-black/5 transition"><td class="p-5 font-bold">${t.desc}</td><td class="p-5 text-slate-400 text-[10px] font-bold uppercase">${t.cat}</td><td class="p-5 text-right font-black ${t.tipo === 'receita' ? 'text-emerald-600' : 'text-rose-600'}">R$ ${t.valor.toLocaleString('pt-BR')}</td><td class="p-5 text-right"><button onclick="db.collection('transacoes').doc('${t.id}').delete()"><i class="fas fa-times opacity-20 hover:opacity-100"></i></button></td></tr>`;
+                    if(t.tipo === 'receita') rec += t.valor; else { des += t.valor; catM[t.cat] = (catM[t.cat] || 0) + t.valor; }
+                    listT.innerHTML += `<tr class="hover:bg-black/5 transition"><td class="p-6 font-bold">${t.desc}</td><td class="p-6 text-slate-400 text-[10px] font-black uppercase tracking-widest">${t.cat}</td><td class="p-6 text-right font-black ${t.tipo === 'receita' ? 'text-emerald-600' : 'text-rose-600'}">R$ ${t.valor.toLocaleString('pt-BR')}</td><td class="p-6 text-right"><button onclick="db.collection('transacoes').doc('${t.id}').delete()"><i class="fas fa-times opacity-20 hover:opacity-100 transition-all"></i></button></td></tr>`;
                 }
             });
 
-            const listaA = document.getElementById('lista-ativos'); listaA.innerHTML = '';
+            const listA = document.getElementById('lista-ativos'); listA.innerHTML = '';
             ativos.forEach(a => {
-                const tot = a.qtd * a.preco; patrimônio += tot;
-                invMap[a.tipo] = (invMap[a.tipo] || 0) + tot;
-                listaA.innerHTML += `<tr class="hover:bg-black/5 transition"><td class="p-5 font-black">${a.ticker}</td><td class="p-5 text-xs text-slate-400">${a.tipo}</td><td class="p-5 font-medium">${a.qtd}</td><td class="p-5 text-right font-black">R$ ${tot.toLocaleString('pt-BR')}</td><td class="p-5 text-right"><button onclick="db.collection('ativos').doc('${a.id}').delete()"><i class="fas fa-trash opacity-10"></i></button></td></tr>`;
+                const tot = a.qtd * a.preco; pat += tot;
+                invM[a.tipo] = (invM[a.tipo] || 0) + tot;
+                listA.innerHTML += `<tr class="hover:bg-black/5 transition"><td class="p-6 font-black">${a.ticker}</td><td class="p-6 text-xs text-slate-400">${a.tipo}</td><td class="p-6 text-center font-medium">${a.qtd}</td><td class="p-6 text-right font-black">R$ ${tot.toLocaleString('pt-BR')}</td><td class="p-6 text-right"><button onclick="db.collection('ativos').doc('${a.id}').delete()"><i class="fas fa-trash opacity-10 hover:opacity-100 transition-all"></i></button></td></tr>`;
             });
 
-            document.getElementById('saldo-total').innerText = `R$ ${patrimônio.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('total-receitas').innerText = `R$ ${rec.toFixed(2)}`;
-            document.getElementById('total-despesas').innerText = `R$ ${des.toFixed(2)}`;
+            document.getElementById('saldo-total').innerText = `R$ ${pat.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('total-receitas').innerText = `R$ ${rec.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('total-despesas').innerText = `R$ ${des.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
 
-            renderCharts(catMap, invMap);
-            renderMetas(patrimônio);
+            renderCharts(catM, invM);
+            renderMetas(pat);
         }
 
-        function renderCharts(gastos, invest) {
-            const config = (id, map, colors) => {
+        function renderCharts(g, i) {
+            const cfg = (id, map, colors) => {
                 const c = document.getElementById(id).getContext('2d');
-                return new Chart(c, { type: 'doughnut', data: { labels: Object.keys(map), datasets: [{ data: Object.values(map), backgroundColor: colors, borderWidth: 0 }] }, options: { cutout: '85%', plugins: { legend: { display: false } } } });
+                return new Chart(c, { type: 'doughnut', data: { labels: Object.keys(map), datasets: [{ data: Object.values(map), backgroundColor: colors, borderWidth: 0 }] }, options: { cutout: '82%', plugins: { legend: { display: false } } } });
             }
-            if(chartGastos) chartGastos.destroy(); if(chartInvest) chartInvest.destroy();
-            chartGastos = config('chartGastos', gastos, ['#000', '#888', '#007AFF', '#5856D6']);
-            chartInvest = config('chartInvest', invest, ['#000', '#FF9500', '#34C759', '#AF52DE']);
+            if(chartG) chartG.destroy(); if(chartI) chartI.destroy();
+            chartG = cfg('chartGastos', g, ['#000', '#D4AF37', '#007AFF', '#5856D6', '#FF9500']);
+            chartI = cfg('chartInvest', i, ['#000', '#D4AF37', '#34C759', '#AF52DE']);
         }
 
-        function renderMetas(patrimonio) {
-            const cont = document.getElementById('container-metas');
-            cont.innerHTML = metas.length ? '' : '<p class="text-[10px] text-slate-400 font-bold uppercase">Sem objetivos definidos.</p>';
+        function renderMetas(pat) {
+            const c = document.getElementById('container-metas');
+            c.innerHTML = metas.length ? '' : '<p class="text-[10px] text-slate-400 font-bold uppercase italic">Sem metas registradas.</p>';
             metas.forEach(m => {
-                const p = Math.min((patrimonio / m.valor) * 100, 100).toFixed(1);
-                cont.innerHTML += `<div><div class="flex justify-between mb-2 text-[10px] font-black uppercase"><span>${m.nome}</span><span>${p}%</span></div><div class="w-full bg-black/5 h-2 rounded-full overflow-hidden"><div class="bg-black h-full transition-all duration-1000" style="width: ${p}%"></div></div></div>`;
+                const p = Math.min((pat / m.valor) * 100, 100).toFixed(1);
+                c.innerHTML += `<div><div class="flex justify-between mb-3 text-[10px] font-black uppercase tracking-widest"><span>${m.nome}</span><span>${p}%</span></div><div class="w-full bg-black/5 h-1.5 rounded-full overflow-hidden"><div class="bg-black h-full transition-all duration-1000" style="width: ${p}%"></div></div></div>`;
             });
         }
     </script>
